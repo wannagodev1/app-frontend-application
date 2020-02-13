@@ -56,7 +56,7 @@ public class UIUtils {
    * Thread-unsafe formatters.
    */
   private static final ThreadLocal<DecimalFormat> decimalFormat = ThreadLocal
-      .withInitial(() -> new DecimalFormat("###,###,###.00"));
+      .withInitial(() -> new DecimalFormat("###,###,##0.00"));
   private static final ThreadLocal<DateTimeFormatter> dateFormat = ThreadLocal
       .withInitial(() -> DateTimeFormatter.ofPattern("MMM dd, YYYY"));
   /* ==== BUTTONS ==== */

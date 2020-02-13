@@ -38,7 +38,6 @@ import com.vaadin.flow.router.RouterLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.wannagoframework.commons.utils.HasLogger;
-import org.wannagoframework.dto.domain.notification.MailActionEnum;
 import org.wannagoframework.dto.domain.notification.MailTemplate;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
@@ -152,10 +151,8 @@ public class MailTemplateAdminView extends ViewFrame implements RouterLayout, Ha
       }
     });
 
-    ComboBox<MailActionEnum> mailActionField = new ComboBox<>();
-    mailActionField.setItems(MailActionEnum.values());
-    mailActionField
-        .setItemLabelGenerator(e -> getTranslation("element.mailTemplate.action." + e.name()));
+    TextField mailActionField = new TextField();
+    mailActionField.setWidthFull();
 
     formLayout.addFormItem(nameField, getTranslation("element.mailTemplate.name"));
     formLayout.addFormItem(mailActionField, getTranslation("element.mailTemplate.action"));
@@ -195,7 +192,7 @@ public class MailTemplateAdminView extends ViewFrame implements RouterLayout, Ha
       ServiceResult<MailTemplate> _mailTemplate = NotificationServices.getMailTemplateService()
           .save(new SaveQuery<>(mailTemplate));
       if (_mailTemplate.getIsSuccess() && _mailTemplate.getData() != null) {
-        WannagoMainView.get().displayInfoMessage(getTranslation("message.global.recordSaved"));
+        WannagoMainView.get().displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
         mailTemplate = _mailTemplate.getData();
         if (isNew) {
           UI.getCurrent().navigate(MailTemplateAdminView.class, mailTemplate.getId());

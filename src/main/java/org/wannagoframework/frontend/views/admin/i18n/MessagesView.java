@@ -68,9 +68,9 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
 
-    grid.addColumn(Message::getName).setKey("name");
+    grid.addColumn(Message::getName).setKey("name").setSortable(true);
     grid.addColumn(new BooleanRenderer<>(Message::getIsTranslated))
-        .setKey("isTranslated");
+        .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
       if (column.getKey() != null) {

@@ -39,6 +39,7 @@ import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
 import org.wannagoframework.frontend.utils.i18n.I18NPageTitle;
+import org.wannagoframework.frontend.utils.i18n.MyI18NProvider;
 import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
 
 /**
@@ -50,11 +51,16 @@ import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
 @Secured({SecurityConst.ROLE_I18N, SecurityConst.ROLE_ADMIN})
 public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilter> {
 
-  public ElementsView() {
+  public ElementsView(MyI18NProvider myI18NProvider) {
     super("element.", Element.class, new ElementDataProvider(),
-        (e) -> I18NServices.getElementService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> {
+          Element elt = I18NServices.getElementService().save(new SaveQuery<>(e))
+              .getData();
+          myI18NProvider.reloadElements();
+          return elt;
+        },
         e -> I18NServices.getElementService().delete(new DeleteByIdQuery(e.getId())));
+
   }
 
   protected Grid createGrid() {
@@ -67,9 +73,9 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
 
-    grid.addColumn(Element::getName).setKey("name");
+    grid.addColumn(Element::getName).setKey("name").setSortable(true);
     grid.addColumn(new BooleanRenderer<>(Element::getIsTranslated))
-        .setKey("isTranslated");
+        .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
       if (column.getKey() != null) {

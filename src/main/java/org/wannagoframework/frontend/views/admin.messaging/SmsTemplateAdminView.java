@@ -166,7 +166,7 @@ public class SmsTemplateAdminView extends ViewFrame implements RouterLayout, Has
       ServiceResult<SmsTemplate> _smsTemplate = NotificationServices.getSmsTemplateService()
           .save(new SaveQuery<>(smsTemplate));
       if (_smsTemplate.getIsSuccess() && _smsTemplate.getData() != null) {
-        WannagoMainView.get().displayInfoMessage(getTranslation("message.global.recordSaved"));
+        WannagoMainView.get().displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
         smsTemplate = _smsTemplate.getData();
         if (isNew) {
           UI.getCurrent().navigate(SmsTemplateAdminView.class, smsTemplate.getId());

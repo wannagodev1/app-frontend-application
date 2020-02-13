@@ -85,6 +85,24 @@ public class MyI18NProvider implements I18NProvider, HasLogger {
         Arrays.asList(Locale.getAvailableLocales()));
   }
 
+  public void reload() {
+    reloadElements();
+    reloadMessages();
+    reloadActions();
+  }
+
+  public void reloadElements() {
+    elementMap = new HashMap<>();
+  }
+
+  public void reloadMessages() {
+    messageMap = new HashMap<>();
+  }
+
+  public void reloadActions() {
+    actionMap = new HashMap<>();
+  }
+
   @Override
   public String getTranslation(String s, Locale locale, Object... objects) {
     String loggerPrefix = getLoggerPrefix("getTranslation", locale, objects);

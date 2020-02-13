@@ -113,12 +113,14 @@ public class ElementTrlListField extends
     language.setItemLabelGenerator(Locale::getDisplayLanguage);
 
     Checkbox isDefault = new Checkbox(getTranslation("element." + i18nPrefix + "isDefault"));
+    Checkbox isTranslated = new Checkbox(getTranslation("element." + i18nPrefix + "isTranslated"));
 
-    FormLayout form = new FormLayout(value, isDefault, language);
+    FormLayout form = new FormLayout(value, isDefault, isTranslated, language);
 
     Binder<ElementTrl> binder = new BeanValidationBinder<>(ElementTrl.class);
     binder.forField(value).asRequired().bind(ElementTrl::getValue, ElementTrl::setValue);
     binder.forField(isDefault).bind(ElementTrl::getIsDefault, ElementTrl::setIsDefault);
+    binder.forField(isTranslated).bind(ElementTrl::getIsTranslated, ElementTrl::setIsTranslated);
     binder.forField(language).asRequired()
         .bind((elementTrl) -> elementTrl.getIso3Language() == null ? null
                 : new Locale(elementTrl.getIso3Language()),

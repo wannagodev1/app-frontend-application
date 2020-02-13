@@ -66,10 +66,9 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
 
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
-
-    grid.addColumn(Action::getName).setKey("name");
+    grid.addColumn(Action::getName).setKey("name").setSortable(true);
     grid.addColumn(new BooleanRenderer<>(Action::getIsTranslated))
-        .setKey("isTranslated");
+        .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
       if (column.getKey() != null) {

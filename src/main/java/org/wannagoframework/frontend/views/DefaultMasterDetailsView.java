@@ -15,9 +15,13 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.wannagoframework.dto.domain.BaseEntity;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
@@ -176,6 +180,8 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   protected void showDetails(T entity) {
+    this.binder = new BeanValidationBinder<>(entityType);
+
     currentEditing = entity;
     detailsDrawer.setContent(createDetails(entity));
     detailsDrawer.show();
@@ -247,25 +253,29 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   ;
 
   private void save() {
-    Object id = binder.getBean().getId();
-
-    boolean isNew = id == null;
-
     if (binder.writeBeanIfValid(currentEditing)) {
+      boolean isNew = currentEditing.getId() == null;
+
       currentEditing = saveHandler.apply(currentEditing);
       afterSave(currentEditing);
+
+      if (!isNew) {
+        dataProvider.refreshItem(currentEditing);
+      } else {
+        dataProvider.refreshAll();
+      }
+      showDetails(currentEditing);
     } else {
-      Notification.show(getTranslation("message.global.validationErrorMessage"), 3000,
+      BinderValidationStatus<T> validate = binder.validate();
+      String errorText = validate.getFieldValidationStatuses()
+          .stream().filter(BindingValidationStatus::isError)
+          .map(BindingValidationStatus::getMessage)
+          .map(Optional::get).distinct()
+          .collect(Collectors.joining(", "));
+
+      Notification.show(getTranslation("message.global.validationErrorMessage") + " : " + errorText, 3000,
           Notification.Position.BOTTOM_CENTER);
     }
-
-    if (!isNew) {
-      dataProvider.refreshItem(currentEditing);
-    } else {
-      dataProvider.refreshAll();
-    }
-
-    showDetails(currentEditing);
   }
 
   public void delete() {

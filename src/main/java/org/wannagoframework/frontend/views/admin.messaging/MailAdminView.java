@@ -29,7 +29,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.wannagoframework.dto.domain.notification.Mail;
-import org.wannagoframework.dto.domain.notification.MailActionEnum;
 import org.wannagoframework.dto.domain.notification.MailStatusEnum;
 import org.wannagoframework.dto.utils.SecurityConst;
 import org.wannagoframework.frontend.customFields.AttachmentField;
@@ -98,8 +97,8 @@ public class MailAdminView extends DefaultMasterDetailsView<Mail, DefaultFilter>
     AttachmentField attachmentField = new AttachmentField();
     attachmentField.setWidth("100%");
 
-    ComboBox<MailActionEnum> mailActionField = new ComboBox<>();
-    mailActionField.setItems(MailActionEnum.values());
+    TextField  mailActionField = new TextField();
+    mailActionField.setWidth("100%");
 
     ComboBox<MailStatusEnum> mailStatusField = new ComboBox<>();
     mailStatusField.setItems(MailStatusEnum.values());

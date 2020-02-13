@@ -120,7 +120,7 @@ public class SessionView extends DefaultMasterDetailsView<Session, DefaultFilter
     editingForm.addFormItem(isSuccessField, getTranslation("element." + I18N_PREFIX + "isSuccess"));
     editingForm.addFormItem(errorField, getTranslation("element." + I18N_PREFIX + "error"));
     editingForm
-        .addFormItem(jSessionIdField, getTranslation("element." + I18N_PREFIX + "jSessionId"));
+        .addFormItem(jSessionIdField, getTranslation("element." + I18N_PREFIX + "jsessionId"));
 
     binder.setBean(session);
 

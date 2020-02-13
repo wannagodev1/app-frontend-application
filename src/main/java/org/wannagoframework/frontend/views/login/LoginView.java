@@ -158,6 +158,7 @@ public class LoginView extends ViewFrame
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
+    WannagoMainView.get().beforeLogin();
     WannagoMainView.get().getAppBar().setTitle(getTranslation("element.settings.title"));
     setViewContent(buildLoginForm());
   }
@@ -209,11 +210,11 @@ public class LoginView extends ViewFrame
     HorizontalLayout labels = new HorizontalLayout();
     labels.setMargin(false);
 
-    H2 welcome = new H2(getTranslation("element.title.welcome"));
+    H2 welcome = new H2(getTranslation("element.application.title"));
     welcome.setSizeUndefined();
     labels.add(welcome);
 
-    H2 title = new H2(getTranslation("element.title.applicationName"));
+    H2 title = new H2(getTranslation("element.application.additionalInformation"));
     title.setSizeUndefined();
     labels.add(title);
     return labels;
@@ -292,7 +293,7 @@ public class LoginView extends ViewFrame
 
     Binding<SigninForm, String> usernameBinding = binder.forField(usernameField)
         .withValidator(usernameEmptyPredicate,
-            getTranslation("message.error.usernameEmpty"))
+            getTranslation("message.error.usernameNotEmpty"))
         .bind(SigninForm::getUsername, SigninForm::setUsername);
     Binding<SigninForm, String> passwordBinging = binder.forField(passwordField)
         .withValidator(passwordPredicate, getTranslation("message.error.passwordNotEmpty"))
@@ -312,7 +313,7 @@ public class LoginView extends ViewFrame
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     signinFormLayout.add(buttonsLayout);
 
-    Button loginButton = new Button(getTranslation("element.login.doSignin"));
+    Button loginButton = new Button(getTranslation("action.login.doSignin"));
     buttonsLayout.add(loginButton);
     loginButton
         .addClickListener(event -> {

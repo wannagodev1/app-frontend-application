@@ -158,6 +158,7 @@ public abstract class WannagoMainView extends FlexBoxLayout
     UI.getCurrent().navigate(WannagoMainView.get().getHomePage());
   }
 
+
   /**
    * Initialise the required components and containers.
    */
@@ -183,12 +184,17 @@ public abstract class WannagoMainView extends FlexBoxLayout
   }
 
   public void rebuildNaviItems() {
+    rebuildNaviItems( true );
+  }
+  public void rebuildNaviItems(boolean resetAppBar) {
     naviDrawer.getMenu().removeAll();
     naviDrawer.toogleSearch();
     initNaviItems();
 
-    appBar.reset();
-    appBar.rebuildMenu();
+    if ( resetAppBar ) {
+      appBar.reset();
+      appBar.rebuildMenu();
+    }
   }
 
   protected void addToMainMenu(NaviMenu mainMenu) {
@@ -228,13 +234,14 @@ public abstract class WannagoMainView extends FlexBoxLayout
         confirmDialog.setHeader(getTranslation("element.title.confirmLocalChange"));
         confirmDialog.setText(
             getTranslation("message.confirmLocalChange.message") + "Current = " + UI.getCurrent()
-                .getLocale().getLanguage() + ", Settings = " + currentUser.getDefaultLocale()
-                .getLanguage());
+                .getLocale().getDisplayLanguage() + ", Settings = " + currentUser.getDefaultLocale()
+                .getDisplayLanguage());
         confirmDialog.setConfirmButton(getTranslation("action.localChange.confirm"), event -> {
           Locale newLocale = currentUser.getDefaultLocale();
           UI.getCurrent().setLocale(newLocale);
           UI.getCurrent().getSession().setLocale(newLocale);
           confirmDialog.close();
+          UI.getCurrent().getPage().executeJs("location.reload();");
         });
         confirmDialog.setCancelButton(getTranslation("action.localChange.cancel"),
             event -> confirmDialog.close());
@@ -546,6 +553,9 @@ public abstract class WannagoMainView extends FlexBoxLayout
   }
 
   public abstract void onLogout();
+
+  public void beforeLogin() {
+  }
 
   private static class FeederThread extends Thread {
 
