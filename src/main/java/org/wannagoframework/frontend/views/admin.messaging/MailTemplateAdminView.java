@@ -172,7 +172,7 @@ public class MailTemplateAdminView extends ViewFrame implements RouterLayout, Ha
     binder.forField(fromField).asRequired(getTranslation("message.error.fromRequired"))
         .bind(MailTemplate::getFrom, MailTemplate::setFrom);
     binder.bind(copyToField, MailTemplate::getCopyTo, MailTemplate::setCopyTo);
-    binder.forField(bodyField).asRequired(getTranslation("message.error.bodyRequired"))
+    binder.forField(bodyField.asHtml()).asRequired(getTranslation("message.error.bodyRequired"))
         .bind(MailTemplate::getBody, MailTemplate::setBody);
     binder.forField(bodyAsHtml).bind(MailTemplate::getBodyHtml, MailTemplate::setBodyHtml);
     binder.forField(mailActionField).asRequired(getTranslation("message.error.mailAction"))
