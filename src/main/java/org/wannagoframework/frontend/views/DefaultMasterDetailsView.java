@@ -90,6 +90,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     initHeader();
     setViewContent(createContent());
     setViewDetails(createDetailsDrawer());
+
     filter(null);
   }
 
@@ -119,10 +120,12 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   public void enableSaveButton() {
+    if ( newRecordButton != null )
     newRecordButton.setEnabled(true);
   }
 
   public void disableSaveButton() {
+    if ( newRecordButton != null )
     newRecordButton.setEnabled(false);
   }
 
