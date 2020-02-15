@@ -60,6 +60,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   private Function<T, T> saveHandler;
   private Consumer<T> deleteHandler;
   private Tabs tabs;
+  private Button newRecordButton;
 
   public DefaultMasterDetailsView(String I18N_PREFIX, Class<T> entityType,
       DefaultDataProvider<T, F> dataProvider) {
@@ -104,17 +105,25 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     appBar.addActionItem(searchButton);
 
     if (saveHandler != null) {
-      Button newPlaceButton = UIUtils
+      newRecordButton = UIUtils
           .createTertiaryButton(VaadinIcon.PLUS);
-      newPlaceButton.addClickListener(event -> {
+      newRecordButton.addClickListener(event -> {
         try {
           showDetails(entityType.getDeclaredConstructor().newInstance());
 
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
         }
       });
-      appBar.addActionItem(newPlaceButton);
+      appBar.addActionItem(newRecordButton);
     }
+  }
+
+  public void enableSaveButton() {
+    newRecordButton.setEnabled(true);
+  }
+
+  public void disableSaveButton() {
+    newRecordButton.setEnabled(false);
   }
 
   private Component createContent() {
