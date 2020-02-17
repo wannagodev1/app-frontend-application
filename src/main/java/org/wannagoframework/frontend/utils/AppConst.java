@@ -112,7 +112,7 @@ public class AppConst {
 
   public static final String[] SECURITY_USER_SORT_FIELDS = {"username", "id"};
   public static final String[] DEFAULT_SORT_FIELDS = {"name", "id"};
-  public static final String[] COUNTRY_SORT_FIELDS = {"t.name"};
+  public static final String[] COUNTRY_SORT_FIELDS = {"m.name"};
   public static final String[] PLACE_TYPE_SORT_FIELDS = {"t.name"};
   public static final String[] POST_SORT_FIELDS = {"created"};
 

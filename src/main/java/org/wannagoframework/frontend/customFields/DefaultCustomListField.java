@@ -138,8 +138,6 @@ public abstract class DefaultCustomListField<C extends BaseEntity> extends FlexB
 
   public class Backend extends DefaultBackend<C> {
 
-    private AtomicLong uniqueLong = new AtomicLong();
-
     @Override
     public Object getId(C item) {
       return item.getId();

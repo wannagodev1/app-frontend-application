@@ -254,21 +254,20 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     return auditForm;
   }
 
-  protected void afterSave(T entity) {
-  }
+  protected boolean beforeSave(T entity) { return true; };
 
-  ;
+  protected void afterSave(T entity) { };
 
-  protected void afterDelete() {
-  }
+  protected boolean beforeDelete(T entity) { return true; };
 
-  ;
+  protected void afterDelete() { };
 
   private void save() {
     if (binder.writeBeanIfValid(currentEditing)) {
       boolean isNew = currentEditing.getId() == null;
 
-      currentEditing = saveHandler.apply(currentEditing);
+      if ( beforeSave(currentEditing) )
+        currentEditing = saveHandler.apply(currentEditing);
       afterSave(currentEditing);
 
       if (!isNew) {
@@ -302,7 +301,8 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   private void deleteConfirmed() {
-    deleteHandler.accept(currentEditing);
+    if ( beforeDelete( currentEditing ))
+      deleteHandler.accept(currentEditing);
 
     afterDelete();
 

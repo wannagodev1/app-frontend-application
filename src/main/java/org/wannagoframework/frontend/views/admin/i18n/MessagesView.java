@@ -24,6 +24,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.textfield.TextField;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.wannagoframework.dto.domain.i18n.Message;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
@@ -133,5 +134,12 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     binder.bind(messageTrl, Message::getTranslations, Message::setTranslations);
 
     return editingForm;
+  }
+
+  protected void filter(String filter) {
+    dataProvider
+        .setFilter( new DefaultFilter(
+            StringUtils.isBlank(filter) ? null : "%"+filter+"%",
+            Boolean.TRUE));
   }
 }

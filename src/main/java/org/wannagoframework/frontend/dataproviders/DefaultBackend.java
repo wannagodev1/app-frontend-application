@@ -29,21 +29,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.wannagoframework.dto.domain.BaseEntity;
 
 /**
  * @author WannaGo Dev1.
  * @version 1.0
  * @since 2019-02-14
  */
-public abstract class DefaultBackend<C> extends
+public abstract class DefaultBackend<C extends BaseEntity> extends
     AbstractBackEndDataProvider<C, CrudFilter> implements
     Serializable {
 
   protected List<C> fieldsMap = new ArrayList<>();
   private Comparator<C> comparator;
-
+  protected AtomicLong uniqueLong = new AtomicLong();
   private SerializablePredicate<C> filter;
 
   public DefaultBackend() {
@@ -104,7 +106,13 @@ public abstract class DefaultBackend<C> extends
     if (comparing.isPresent()) {
       stream = stream.sorted();
     }
-
-    return stream.skip((long) query.getOffset()).limit((long) query.getLimit());
+    long maxId = 0;
+    List<C> result = stream.collect(Collectors.toList());
+    for (C c : result) {
+      if ((long) c.getId() > maxId)
+        maxId = (long) c.getId();
+    }
+    uniqueLong.set(maxId+1);
+    return result.stream().skip((long) query.getOffset()).limit((long) query.getLimit());
   }
 }
