@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicLong;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.BaseEntity;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
@@ -71,7 +70,9 @@ public abstract class DefaultCustomListField<C extends BaseEntity> extends FlexB
   public void setValue(List<C> values) {
     String loggerPrefix = getLoggerPrefix("setPresentationValue");
     logger().debug(loggerPrefix + "Param =  " + values);
-    dataProvider.setValues(values);
+    if (values != null) {
+      dataProvider.setValues(values);
+    }
   }
 
   @Override

@@ -41,6 +41,7 @@ import com.vaadin.flow.shared.Registration;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import org.wannagoframework.dto.domain.security.SecurityUser;
+import org.wannagoframework.dto.domain.user.BaseUser;
 import org.wannagoframework.dto.utils.AppContext;
 import org.wannagoframework.dto.utils.StoredFile;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
@@ -155,7 +156,7 @@ public class AppBar extends FlexBoxLayout {
       ContextMenu contextMenu = new ContextMenu(avatar);
       contextMenu.setOpenOnClick(true);
       contextMenu.addItem(securityUser.getUsername());
-      if (VaadinSession.getCurrent().getAttribute(SecurityUser.class) != null) {
+      if (VaadinSession.getCurrent().getAttribute(BaseUser.class) != null) {
         contextMenu.addItem("Settings",
             e -> getUI().get()
                 .navigate(WannagoMainView.get().getUserSettingsView(), Long.valueOf(-1)));

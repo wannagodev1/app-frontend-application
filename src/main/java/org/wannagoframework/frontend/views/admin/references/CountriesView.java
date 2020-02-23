@@ -44,6 +44,7 @@ import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.reference.intermediateRegionTrl.GetIntermediateRegionTrlQuery;
 import org.wannagoframework.dto.serviceQuery.reference.regionTrl.GetRegionTrlQuery;
 import org.wannagoframework.dto.serviceQuery.reference.subRegionTrl.GetSubRegionTrlQuery;
+import org.wannagoframework.dto.utils.AppContext;
 import org.wannagoframework.dto.utils.SecurityConst;
 import org.wannagoframework.frontend.client.reference.ReferenceServices;
 import org.wannagoframework.frontend.customFields.CountryTrlListField;
@@ -82,18 +83,23 @@ public class CountriesView extends DefaultMasterDetailsView<Country, DefaultFilt
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
 
-    grid.addColumn(Country::getName).setKey("name").setSortProperty("t.name");
-    grid.addColumn(Country::getIso2).setKey("iso2").setSortProperty("m.iso3");
-    grid.addColumn(Country::getIso3).setKey("iso3").setSortProperty("m.iso3");
+    grid.addColumn(Country::getName).setKey("name")
+        .setSortProperty("name." + AppContext.getInstance().getCurrentIso3Language() + ".value");
+    grid.addColumn(Country::getIso2).setKey("iso2").setSortProperty("iso3");
+    grid.addColumn(Country::getIso3).setKey("iso3").setSortProperty("iso3");
     grid.addColumn(new BooleanRenderer<>(Country::getIsEU)).setKey("isEU");
 
-    grid.addColumn(e -> (e.getRegion() != null) ? e.getRegion().getName() : "").setKey("region");
+    grid.addColumn(e -> (e.getRegion() != null) ? e.getRegion().getName() : "").setKey("region")
+        .setSortProperty(
+            "r.`name." + AppContext.getInstance().getCurrentIso3Language() + ".value`");
 
     grid.addColumn(e -> (e.getSubRegion() != null ? e.getSubRegion().getName() : ""))
-        .setKey("subRegion");
+        .setKey("subRegion").setSortProperty(
+        "s.`name." + AppContext.getInstance().getCurrentIso3Language() + ".value`");
     grid.addColumn(
         e -> (e.getIntermediateRegion() != null ? e.getIntermediateRegion().getName() : ""))
-        .setKey("intermediateRegion");
+        .setKey("intermediateRegion").setSortProperty(
+        "i.`name." + AppContext.getInstance().getCurrentIso3Language() + ".value`");
 
     grid.getColumns().forEach(column -> {
       if (column.getKey() != null) {

@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.wannagoframework.dto.domain.reference.Country;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.utils.AppContext;
 import org.wannagoframework.dto.utils.Page;
 import org.wannagoframework.dto.utils.Pageable;
 import org.wannagoframework.frontend.client.reference.ReferenceServices;
@@ -45,7 +46,7 @@ public class CountryDataProvider extends DefaultDataProvider<Country, DefaultFil
   @Autowired
   public CountryDataProvider() {
     super(AppConst.DEFAULT_SORT_DIRECTION,
-        AppConst.COUNTRY_SORT_FIELDS);
+        new String[]{"name." + AppContext.getInstance().getCurrentIso3Language() + ".value"});
   }
 
   @Override
