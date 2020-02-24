@@ -94,6 +94,7 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
       if (column.getKey() != null) {
         column.setHeader(getTranslation("element." + I18N_PREFIX + column.getKey()));
         column.setResizable(true);
+        column.setSortable(true);
       }
     });
     return grid;
@@ -210,7 +211,8 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
             getTranslation("element." + I18N_PREFIX + "failedLoginAttempts"));
 
     editingForm
-        .addFormItem(defaultLocaleField, getTranslation("element." + I18N_PREFIX + "defaultLanguage"));
+        .addFormItem(defaultLocaleField,
+            getTranslation("element." + I18N_PREFIX + "defaultLanguage"));
     editingForm.addFormItem(userTypeField, getTranslation("element." + I18N_PREFIX + "userType"));
 
     FormLayout.FormItem rolesItem = editingForm
@@ -220,8 +222,12 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
 
     binder.setBean(securityUser);
 
-    binder.bind(usernameField, SecurityUser::getUsername, SecurityUser::setUsername);
-    binder.bind(passwordField, SecurityUser::getPassword, SecurityUser::setPassword);
+    binder.forField(usernameField)
+        .asRequired(getTranslation("message.securityUser.usernameRequired"))
+        .bind(SecurityUser::getUsername, SecurityUser::setUsername);
+    binder.forField(passwordField)
+        .asRequired(getTranslation("message.securityUser.passwordRequired"))
+        .bind(SecurityUser::getPassword, SecurityUser::setPassword);
     binder.bind(firstNameField, SecurityUser::getFirstName, SecurityUser::setFirstName);
     binder.bind(lastNameField, SecurityUser::getLastName, SecurityUser::setLastName);
     binder.bind(emailField, SecurityUser::getEmail, SecurityUser::setEmail);
@@ -242,7 +248,9 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
     binder.bind(isCredentialsExpiredField, SecurityUser::getIsCredentialsExpired,
         SecurityUser::setIsCredentialsExpired);
     binder.bind(defaultLocaleField, SecurityUser::getDefaultLocale, SecurityUser::setDefaultLocale);
-    binder.bind(userTypeField, SecurityUser::getUserType, SecurityUser::setUserType);
+    binder.forField(userTypeField)
+        .asRequired(getTranslation("message.securityUser.userTypeRequired"))
+        .bind(SecurityUser::getUserType, SecurityUser::setUserType);
     binder.bind(rolesField, SecurityUser::getRoles, SecurityUser::setRoles);
 
     return editingForm;
