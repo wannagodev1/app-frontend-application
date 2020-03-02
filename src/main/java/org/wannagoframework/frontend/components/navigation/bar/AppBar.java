@@ -40,6 +40,9 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.wannagoframework.dto.domain.security.SecurityUser;
 import org.wannagoframework.dto.domain.user.BaseUser;
 import org.wannagoframework.dto.utils.AppContext;
@@ -47,6 +50,9 @@ import org.wannagoframework.dto.utils.StoredFile;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
 import org.wannagoframework.frontend.components.navigation.tab.NaviTab;
 import org.wannagoframework.frontend.components.navigation.tab.NaviTabs;
+import org.wannagoframework.frontend.layout.size.Horizontal;
+import org.wannagoframework.frontend.layout.size.Right;
+import org.wannagoframework.frontend.layout.size.Vertical;
 import org.wannagoframework.frontend.security.SecurityUtils;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
@@ -71,6 +77,7 @@ public class AppBar extends FlexBoxLayout {
   private ArrayList<Registration> tabSelectionListeners;
   private Button addTab;
 
+  private FlexBoxLayout searchArea;
   private TextField search;
   private ArrayList<Registration> searchValueChangedListeners;
 
@@ -125,10 +132,28 @@ public class AppBar extends FlexBoxLayout {
     search = new TextField();
     search.setPlaceholder("Search");
     search.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-    search.setVisible(false);
+    //search.setVisible(false);
 
     searchValueChangedListeners = new ArrayList<>();
 
+    searchArea = new FlexBoxLayout(search);
+    searchArea.addClassName(CLASS_NAME + "__container");
+    searchArea.setAlignItems(FlexComponent.Alignment.CENTER);
+    searchArea.setSpacing(Right.S);
+    searchArea.setFlexGrow(1, search);
+  }
+
+  private void resetSearchArea() {
+    List<Component> toRemove = new ArrayList<>();
+    for( int i = 0; i < searchArea.getComponentCount(); i++ ) {
+      if ( ! searchArea.getComponentAt(i).equals( search ))
+        toRemove.add( searchArea.getComponentAt(i));
+    }
+    searchArea.remove(toRemove.toArray(new Component[0]));
+  }
+
+  public void addSearchComponents( Component... components ) {
+    searchArea.add( components );
   }
 
   public void rebuildMenu() {
@@ -177,11 +202,11 @@ public class AppBar extends FlexBoxLayout {
   }
 
   private void initContainer() {
-    container = new FlexBoxLayout(menuIcon, contextIcon, this.title, search,
+    container = new FlexBoxLayout(menuIcon, contextIcon, this.title, searchArea,
         actionItems, avatar);
     container.addClassName(CLASS_NAME + "__container");
     container.setAlignItems(FlexComponent.Alignment.CENTER);
-    container.setFlexGrow(1, search);
+    container.setFlexGrow(1, searchArea);
     add(container);
   }
 
@@ -341,7 +366,7 @@ public class AppBar extends FlexBoxLayout {
     searchRegistration = contextIcon
         .addClickListener(e -> searchModeOff());
 
-    search.setVisible(true);
+    searchArea.setVisible(true);
     searchEscRegistration = search.getElement().addEventListener("keypress",
         event -> {
           searchModeOff();
@@ -380,8 +405,12 @@ public class AppBar extends FlexBoxLayout {
       } catch (IllegalArgumentException ignored) {
       }
 
-    search.clear();
-    search.setVisible(false);
+    for( int i = 0; i < searchArea.getComponentCount(); i++ ) {
+      Component c = searchArea.getComponentAt( i );
+      if ( c instanceof HasValue )
+        ( ( HasValue )c ).clear();
+    }
+    searchArea.setVisible(false);
   }
 
   /* === RESET === */
@@ -390,6 +419,7 @@ public class AppBar extends FlexBoxLayout {
     setNaviMode(AppBar.NaviMode.MENU);
     removeAllActionItems();
     removeAllTabs();
+    resetSearchArea();
     searchModeOff();
     if (searchValueChangedListeners != null) {
       searchValueChangedListeners.forEach(Registration::remove);
@@ -405,6 +435,10 @@ public class AppBar extends FlexBoxLayout {
 
   private void updateTabsVisibility() {
     tabs.setVisible(tabs.getComponentCount() > 0);
+  }
+
+  public String getSearchString() {
+    return search.getValue();
   }
 
 

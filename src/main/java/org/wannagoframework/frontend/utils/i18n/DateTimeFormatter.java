@@ -19,6 +19,7 @@
 package org.wannagoframework.frontend.utils.i18n;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.FormatStyle;
 import java.util.Date;
@@ -29,6 +30,9 @@ import java.util.Date;
  * @since 2019-06-22
  */
 public class DateTimeFormatter {
+public static String formatNoYear( LocalDate localDate ) {
+    return localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM"));
+  }
 
   public static String format(Instant instant) {
     return java.time.format.DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
