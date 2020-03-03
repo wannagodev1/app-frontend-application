@@ -40,8 +40,6 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.wannagoframework.dto.domain.security.SecurityUser;
 import org.wannagoframework.dto.domain.user.BaseUser;
@@ -50,9 +48,7 @@ import org.wannagoframework.dto.utils.StoredFile;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
 import org.wannagoframework.frontend.components.navigation.tab.NaviTab;
 import org.wannagoframework.frontend.components.navigation.tab.NaviTabs;
-import org.wannagoframework.frontend.layout.size.Horizontal;
 import org.wannagoframework.frontend.layout.size.Right;
-import org.wannagoframework.frontend.layout.size.Vertical;
 import org.wannagoframework.frontend.security.SecurityUtils;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
@@ -145,15 +141,16 @@ public class AppBar extends FlexBoxLayout {
 
   private void resetSearchArea() {
     List<Component> toRemove = new ArrayList<>();
-    for( int i = 0; i < searchArea.getComponentCount(); i++ ) {
-      if ( ! searchArea.getComponentAt(i).equals( search ))
-        toRemove.add( searchArea.getComponentAt(i));
+    for (int i = 0; i < searchArea.getComponentCount(); i++) {
+      if (!searchArea.getComponentAt(i).equals(search)) {
+        toRemove.add(searchArea.getComponentAt(i));
+      }
     }
     searchArea.remove(toRemove.toArray(new Component[0]));
   }
 
-  public void addSearchComponents( Component... components ) {
-    searchArea.add( components );
+  public void addSearchComponents(Component... components) {
+    searchArea.add(components);
   }
 
   public void rebuildMenu() {
@@ -399,16 +396,18 @@ public class AppBar extends FlexBoxLayout {
       }
     }
 
-    if ( searchEscRegistration != null )
+    if (searchEscRegistration != null) {
       try {
-      searchEscRegistration.remove();
+        searchEscRegistration.remove();
       } catch (IllegalArgumentException ignored) {
       }
+    }
 
-    for( int i = 0; i < searchArea.getComponentCount(); i++ ) {
-      Component c = searchArea.getComponentAt( i );
-      if ( c instanceof HasValue )
-        ( ( HasValue )c ).clear();
+    for (int i = 0; i < searchArea.getComponentCount(); i++) {
+      Component c = searchArea.getComponentAt(i);
+      if (c instanceof HasValue) {
+        ((HasValue) c).clear();
+      }
     }
     searchArea.setVisible(false);
   }

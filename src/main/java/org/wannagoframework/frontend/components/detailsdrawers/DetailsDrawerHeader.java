@@ -44,24 +44,25 @@ public class DetailsDrawerHeader extends FlexBoxLayout {
     setFlexDirection(FlexDirection.COLUMN);
     setWidthFull();
 
-    if ( showClose ) {
+    if (showClose) {
       this.close = UIUtils.createTertiaryInlineButton(VaadinIcon.CLOSE);
       UIUtils.setLineHeight("1", this.close);
     }
 
-    if ( showTitle ) {
+    if (showTitle) {
       this.title = UIUtils.createH4Label(title);
     }
 
     FlexBoxLayout wrapper;
-    if ( showClose & showTitle )
+    if (showClose & showTitle) {
       wrapper = new FlexBoxLayout(this.close, this.title);
-    else if ( showTitle )
+    } else if (showTitle) {
       wrapper = new FlexBoxLayout(this.title);
-    else if ( showClose )
-      wrapper = new FlexBoxLayout(this.close );
-    else
+    } else if (showClose) {
+      wrapper = new FlexBoxLayout(this.close);
+    } else {
       return;
+    }
 
     wrapper.setAlignItems(FlexComponent.Alignment.CENTER);
     wrapper.setPadding(Horizontal.RESPONSIVE_L, Vertical.M);
@@ -70,11 +71,11 @@ public class DetailsDrawerHeader extends FlexBoxLayout {
   }
 
   public DetailsDrawerHeader(String title) {
-    this( title, true, true );
+    this(title, true, true);
   }
 
   public DetailsDrawerHeader(String title, Tabs tabs) {
-    this(title, true, true );
+    this(title, true, true);
     add(tabs);
   }
 

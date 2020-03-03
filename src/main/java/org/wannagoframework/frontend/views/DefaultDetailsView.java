@@ -4,14 +4,9 @@ import ch.carnet.kasparscherrer.EmptyFormLayoutItem;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
@@ -22,12 +17,10 @@ import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.RouterLayout;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.BaseEntity;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
@@ -35,15 +28,10 @@ import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawer;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawerFooter;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawerHeader;
 import org.wannagoframework.frontend.components.navigation.bar.AppBar;
-import org.wannagoframework.frontend.components.navigation.bar.AppBar.NaviMode;
-import org.wannagoframework.frontend.dataproviders.DefaultDataProvider;
-import org.wannagoframework.frontend.dataproviders.DefaultDataProvider.DefaultFilter;
-import org.wannagoframework.frontend.layout.SplitViewFrame;
 import org.wannagoframework.frontend.layout.ViewFrame;
 import org.wannagoframework.frontend.layout.size.Horizontal;
 import org.wannagoframework.frontend.layout.size.Top;
 import org.wannagoframework.frontend.utils.LumoStyles;
-import org.wannagoframework.frontend.utils.UIUtils;
 import org.wannagoframework.frontend.utils.css.BoxSizing;
 import org.wannagoframework.frontend.utils.i18n.DateTimeFormatter;
 
@@ -76,7 +64,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     this.parentViewClassname = parentViewClassname;
   }
 
-  public DefaultDetailsView(String I18N_PREFIX, Class<T> entityType,Class parentViewClassname,
+  public DefaultDetailsView(String I18N_PREFIX, Class<T> entityType, Class parentViewClassname,
       Function<T, T> saveHandler, Consumer<T> deleteHandler) {
     this.I18N_PREFIX = I18N_PREFIX;
     this.entityType = entityType;
@@ -102,7 +90,8 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     appBar.setTitle(getTitle(currentEditing));
   }
 
-  protected abstract String getTitle( T entity );
+  protected abstract String getTitle(T entity);
+
   protected abstract Component createDetails(T entity);
 
   private Component createContent() {
@@ -136,7 +125,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     detailsDrawer
         .setContent(createDetails(currentEditing));
 
-    detailsDrawerHeader = new DetailsDrawerHeader("",tabs, false, false);
+    detailsDrawerHeader = new DetailsDrawerHeader("", tabs, false, false);
     detailsDrawer.setHeader(detailsDrawerHeader);
 
     // Footer
@@ -223,20 +212,27 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     return auditForm;
   }
 
-  protected boolean beforeSave(T entity) { return true; };
+  protected boolean beforeSave(T entity) {
+    return true;
+  }
 
-  protected void afterSave(T entity) { };
+  protected void afterSave(T entity) {
+  }
 
-  protected boolean beforeDelete(T entity) { return true; };
+  protected boolean beforeDelete(T entity) {
+    return true;
+  }
 
-  protected void afterDelete() { };
+  protected void afterDelete() {
+  }
 
   private void save() {
     if (binder.writeBeanIfValid(currentEditing)) {
       boolean isNew = currentEditing.getId() == null;
 
-      if ( beforeSave(currentEditing) )
+      if (beforeSave(currentEditing)) {
         currentEditing = saveHandler.apply(currentEditing);
+      }
       afterSave(currentEditing);
 
       showDetails(currentEditing);
@@ -248,8 +244,9 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
           .map(Optional::get).distinct()
           .collect(Collectors.joining(", "));
 
-      Notification.show(getTranslation("message.global.validationErrorMessage") + " : " + errorText, 3000,
-          Notification.Position.BOTTOM_CENTER);
+      Notification
+          .show(getTranslation("message.global.validationErrorMessage") + " : " + errorText, 3000,
+              Notification.Position.BOTTOM_CENTER);
     }
   }
 
@@ -265,8 +262,9 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
   }
 
   private void deleteConfirmed() {
-    if ( beforeDelete( currentEditing ))
+    if (beforeDelete(currentEditing)) {
       deleteHandler.accept(currentEditing);
+    }
 
     afterDelete();
 

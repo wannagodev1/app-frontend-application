@@ -97,7 +97,7 @@ public class MailAdminView extends DefaultMasterDetailsView<Mail, DefaultFilter>
     AttachmentField attachmentField = new AttachmentField();
     attachmentField.setWidth("100%");
 
-    TextField  mailActionField = new TextField();
+    TextField mailActionField = new TextField();
     mailActionField.setWidth("100%");
 
     ComboBox<MailStatusEnum> mailStatusField = new ComboBox<>();

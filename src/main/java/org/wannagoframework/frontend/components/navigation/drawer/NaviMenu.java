@@ -47,7 +47,7 @@ public class NaviMenu extends Div {
 
   public void filter(String filter) {
     getNaviItems().forEach(naviItem -> {
-      boolean matches = ((NaviItem) naviItem).getText().toLowerCase()
+      boolean matches = naviItem.getText().toLowerCase()
           .contains(filter.toLowerCase());
       naviItem.setVisible(matches);
     });
@@ -98,7 +98,7 @@ public class NaviMenu extends Div {
   }
 
   public List<NaviItem> getNaviItems() {
-    List<NaviItem> items = (List) getChildren()
+    List<NaviItem> items = getChildren()
         .collect(Collectors.toList());
     return items;
   }

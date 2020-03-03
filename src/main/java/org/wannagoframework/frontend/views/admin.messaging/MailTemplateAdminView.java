@@ -22,7 +22,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -192,7 +191,8 @@ public class MailTemplateAdminView extends ViewFrame implements RouterLayout, Ha
       ServiceResult<MailTemplate> _mailTemplate = NotificationServices.getMailTemplateService()
           .save(new SaveQuery<>(mailTemplate));
       if (_mailTemplate.getIsSuccess() && _mailTemplate.getData() != null) {
-        WannagoMainView.get().displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
+        WannagoMainView.get()
+            .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
         mailTemplate = _mailTemplate.getData();
         if (isNew) {
           UI.getCurrent().navigate(MailTemplateAdminView.class, mailTemplate.getId());

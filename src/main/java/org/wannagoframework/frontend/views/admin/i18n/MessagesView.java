@@ -138,8 +138,8 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
 
   protected void filter(String filter) {
     dataProvider
-        .setFilter( new DefaultFilter(
-            StringUtils.isBlank(filter) ? null : "%"+filter+"%",
+        .setFilter(new DefaultFilter(
+            StringUtils.isBlank(filter) ? null : "%" + filter + "%",
             Boolean.TRUE));
   }
 }

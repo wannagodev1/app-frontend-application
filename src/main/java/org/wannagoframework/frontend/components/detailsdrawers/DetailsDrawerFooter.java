@@ -98,7 +98,9 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
     delete.setVisible(isVisible);
   }
 
-  public void setSaveButtonEnabled(boolean isEnabled) { save.setEnabled(isEnabled); }
+  public void setSaveButtonEnabled(boolean isEnabled) {
+    save.setEnabled(isEnabled);
+  }
 
   public void setCancelButtonEnabled(boolean isEnabled) {
     cancel.setEnabled(isEnabled);

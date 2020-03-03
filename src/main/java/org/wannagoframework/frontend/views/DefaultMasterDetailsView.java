@@ -94,16 +94,15 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     filter(null);
   }
 
+  protected T getCurrentEditing() {
+    return currentEditing;
+  }
+
   protected void initHeader() {
     AppBar appBar = WannagoMainView.get().getAppBar();
     appBar.setNaviMode(NaviMode.MENU);
 
-    Button searchButton = UIUtils
-        .createTertiaryButton(VaadinIcon.SEARCH);
-    searchButton.addClickListener(event -> appBar.searchModeOn());
-    appBar.addSearchListener(event -> filter((String) event.getValue()));
-    appBar.setSearchPlaceholder(getTranslation("element.global.search"));
-    appBar.addActionItem(searchButton);
+    initSearchBar();
 
     if (saveHandler != null) {
       newRecordButton = UIUtils
@@ -119,14 +118,25 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     }
   }
 
+  protected void initSearchBar() {
+    AppBar appBar = WannagoMainView.get().getAppBar();
+    Button searchButton = UIUtils.createTertiaryButton(VaadinIcon.SEARCH);
+    searchButton.addClickListener(event -> appBar.searchModeOn());
+    appBar.addSearchListener(event -> filter((String) event.getValue()));
+    appBar.setSearchPlaceholder(getTranslation("element.global.search"));
+    appBar.addActionItem(searchButton);
+  }
+
   public void enableSaveButton() {
-    if ( newRecordButton != null )
-    newRecordButton.setEnabled(true);
+    if (newRecordButton != null) {
+      newRecordButton.setEnabled(true);
+    }
   }
 
   public void disableSaveButton() {
-    if ( newRecordButton != null )
-    newRecordButton.setEnabled(false);
+    if (newRecordButton != null) {
+      newRecordButton.setEnabled(false);
+    }
   }
 
   private Component createContent() {
@@ -139,10 +149,15 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
   protected abstract Grid createGrid();
 
-  private DetailsDrawer createDetailsDrawer() {
-    detailsDrawer = new DetailsDrawer(DetailsDrawer.Position.RIGHT);
+  protected DetailsDrawer.Position getDetailsDrawerPosition() {
+    return DetailsDrawer.Position.RIGHT;
+  }
 
-    // Header
+  protected SplitViewFrame.Position getSplitViewFramePosition() {
+    return SplitViewFrame.Position.RIGHT;
+  }
+
+  protected Tabs buildTabs() {
     Tab details = new Tab(getTranslation("element.title.details"));
     Tab audit = new Tab(getTranslation("element.title.audit"));
 
@@ -158,6 +173,16 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
             .setContent(createAudit(currentEditing));
       }
     });
+
+    return tabs;
+  }
+
+  private DetailsDrawer createDetailsDrawer() {
+    detailsDrawer = new DetailsDrawer(getDetailsDrawerPosition());
+    setViewDetailsPosition(getSplitViewFramePosition());
+    // Header
+
+    tabs = buildTabs();
 
     detailsDrawerHeader = new DetailsDrawerHeader(
         getTranslation("element." + I18N_PREFIX + "className"), tabs);
@@ -202,7 +227,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
   protected abstract Component createDetails(T entity);
 
-  private Component createAudit(T entity) {
+  protected Component createAudit(T entity) {
     TextField id = new TextField();
     id.setWidth("100%");
 
@@ -254,20 +279,27 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     return auditForm;
   }
 
-  protected boolean beforeSave(T entity) { return true; };
+  protected boolean beforeSave(T entity) {
+    return true;
+  }
 
-  protected void afterSave(T entity) { };
+  protected void afterSave(T entity) {
+  }
 
-  protected boolean beforeDelete(T entity) { return true; };
+  protected boolean beforeDelete(T entity) {
+    return true;
+  }
 
-  protected void afterDelete() { };
+  protected void afterDelete() {
+  }
 
   private void save() {
     if (binder.writeBeanIfValid(currentEditing)) {
       boolean isNew = currentEditing.getId() == null;
 
-      if ( beforeSave(currentEditing) )
+      if (beforeSave(currentEditing)) {
         currentEditing = saveHandler.apply(currentEditing);
+      }
       afterSave(currentEditing);
 
       if (!isNew) {
@@ -284,8 +316,9 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
           .map(Optional::get).distinct()
           .collect(Collectors.joining(", "));
 
-      Notification.show(getTranslation("message.global.validationErrorMessage") + " : " + errorText, 3000,
-          Notification.Position.BOTTOM_CENTER);
+      Notification
+          .show(getTranslation("message.global.validationErrorMessage") + " : " + errorText, 3000,
+              Notification.Position.BOTTOM_CENTER);
     }
   }
 
@@ -301,8 +334,9 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   private void deleteConfirmed() {
-    if ( beforeDelete( currentEditing ))
+    if (beforeDelete(currentEditing)) {
       deleteHandler.accept(currentEditing);
+    }
 
     afterDelete();
 

@@ -44,8 +44,8 @@ public abstract class DefaultBackend<C extends BaseEntity> extends
     Serializable {
 
   protected List<C> fieldsMap = new ArrayList<>();
-  private Comparator<C> comparator;
   protected AtomicLong uniqueLong = new AtomicLong();
+  private Comparator<C> comparator;
   private SerializablePredicate<C> filter;
 
   public DefaultBackend() {
@@ -109,10 +109,11 @@ public abstract class DefaultBackend<C extends BaseEntity> extends
     long maxId = 0;
     List<C> result = stream.collect(Collectors.toList());
     for (C c : result) {
-      if ((long) c.getId() > maxId)
+      if ((long) c.getId() > maxId) {
         maxId = (long) c.getId();
+      }
     }
-    uniqueLong.set(maxId+1);
-    return result.stream().skip((long) query.getOffset()).limit((long) query.getLimit());
+    uniqueLong.set(maxId + 1);
+    return result.stream().skip(query.getOffset()).limit(query.getLimit());
   }
 }

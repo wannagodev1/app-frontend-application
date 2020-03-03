@@ -142,8 +142,8 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
 
   protected void filter(String filter) {
     dataProvider
-        .setFilter( new DefaultFilter(
-            StringUtils.isBlank(filter) ? null : "%"+filter+"%",
+        .setFilter(new DefaultFilter(
+            StringUtils.isBlank(filter) ? null : "%" + filter + "%",
             Boolean.TRUE));
   }
 }

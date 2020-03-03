@@ -254,7 +254,7 @@ public final class SecurityUtils {
   }
 
   private static void deleteRememberMeCookie(Cookie existing) {
-    Cookie cookie = new Cookie(existing.getName(), (String) null);
+    Cookie cookie = new Cookie(existing.getName(), null);
     cookie.setPath(existing.getPath());
     cookie.setDomain(existing.getDomain());
     cookie.setMaxAge(0);

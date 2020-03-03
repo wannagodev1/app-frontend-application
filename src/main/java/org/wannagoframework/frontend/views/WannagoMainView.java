@@ -184,14 +184,15 @@ public abstract class WannagoMainView extends FlexBoxLayout
   }
 
   public void rebuildNaviItems() {
-    rebuildNaviItems( true );
+    rebuildNaviItems(true);
   }
+
   public void rebuildNaviItems(boolean resetAppBar) {
     naviDrawer.getMenu().removeAll();
     naviDrawer.toogleSearch();
     initNaviItems();
 
-    if ( resetAppBar ) {
+    if (resetAppBar) {
       appBar.reset();
       appBar.rebuildMenu();
     }

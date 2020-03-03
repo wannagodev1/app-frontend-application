@@ -30,7 +30,8 @@ import java.util.Date;
  * @since 2019-06-22
  */
 public class DateTimeFormatter {
-public static String formatNoYear( LocalDate localDate ) {
+
+  public static String formatNoYear(LocalDate localDate) {
     return localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM"));
   }
 

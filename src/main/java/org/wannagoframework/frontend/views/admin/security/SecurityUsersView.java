@@ -121,7 +121,7 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
     lastNameField.setReadOnly(true);
     lastNameField.setWidthFull();
 
-    EmailField emailField =  new EmailField();
+    EmailField emailField = new EmailField();
     emailField.setReadOnly(true);
     emailField.setWidthFull();
 
@@ -195,7 +195,8 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
         .addFormItem(isActiveField, getTranslation("element." + I18N_PREFIX + "isActive"));
 
     editingForm
-        .addFormItem(isAccountLockedField, getTranslation("element." + I18N_PREFIX + "isAccountLocked"));
+        .addFormItem(isAccountLockedField,
+            getTranslation("element." + I18N_PREFIX + "isAccountLocked"));
 
     editingForm
         .addFormItem(isActivatedField, getTranslation("element." + I18N_PREFIX + "isActivated"));
@@ -243,7 +244,8 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
     binder.bind(isAccountExpiredField, SecurityUser::getIsAccountExpired,
         SecurityUser::setIsAccountExpired);
     binder
-        .bind(isAccountLockedField, SecurityUser::getIsAccountLocked, SecurityUser::setIsAccountLocked);
+        .bind(isAccountLockedField, SecurityUser::getIsAccountLocked,
+            SecurityUser::setIsAccountLocked);
     binder.bind(isActivatedField, SecurityUser::getIsActivated, SecurityUser::setIsActivated);
     binder.bind(isCredentialsExpiredField, SecurityUser::getIsCredentialsExpired,
         SecurityUser::setIsCredentialsExpired);

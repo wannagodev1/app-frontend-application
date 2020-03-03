@@ -66,15 +66,17 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
     long hasDefault = 0;
     List<ActionTrl> actionTrlList = entity.getTranslations();
     for (ActionTrl actionTrl : actionTrlList) {
-      if ( actionTrl.getIsDefault())
+      if (actionTrl.getIsDefault()) {
         hasDefault++;
+      }
     }
-    if ( hasDefault == 0 )
+    if (hasDefault == 0) {
       WannagoMainView.get().displayErrorMessage(getTranslation(
           "message.global.translationNeedsDefault"));
-    else if ( hasDefault > 1 )
+    } else if (hasDefault > 1) {
       WannagoMainView.get().displayErrorMessage(getTranslation(
           "message.global.translationMaxDefault"));
+    }
     return hasDefault == 1;
   }
 
@@ -157,8 +159,8 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
 
   protected void filter(String filter) {
     dataProvider
-        .setFilter( new DefaultFilter(
-            StringUtils.isBlank(filter) ? null : "%"+filter+"%",
+        .setFilter(new DefaultFilter(
+            StringUtils.isBlank(filter) ? null : "%" + filter + "%",
             Boolean.TRUE));
   }
 }

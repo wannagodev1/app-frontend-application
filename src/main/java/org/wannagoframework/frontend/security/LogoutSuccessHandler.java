@@ -43,8 +43,8 @@ public class LogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implemen
   @Override
   public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws IOException, ServletException {
-String loggerPrefix = getLoggerPrefix("onLogoutSuccess" );
-logger().debug(loggerPrefix+"Logout !");
+    String loggerPrefix = getLoggerPrefix("onLogoutSuccess");
+    logger().debug(loggerPrefix + "Logout !");
     super.onLogoutSuccess(request, response, authentication);
   }
 }

@@ -34,6 +34,7 @@ public class WannaGoProperties {
 
   @Data
   public static class LoginForm {
+
     private Boolean displaySignup = Boolean.TRUE;
     private Boolean displayForgetPassword = Boolean.TRUE;
     private Boolean displaySocialLogin = Boolean.TRUE;
@@ -43,6 +44,7 @@ public class WannaGoProperties {
 
   @Data
   public static class RemoteServices {
+
     private RemoteServer backendServer = new RemoteServer();
     private RemoteServer authorizationServer = new RemoteServer();
     private RemoteServer i18nServer = new RemoteServer();
@@ -51,6 +53,7 @@ public class WannaGoProperties {
 
     @Data
     public static final class RemoteServer {
+
       private String url;
       private String name;
     }

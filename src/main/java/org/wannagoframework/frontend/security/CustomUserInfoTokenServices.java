@@ -119,7 +119,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
 
     String clientId = (String) request.get("clientId");
     Set<String> scope = new LinkedHashSet<>(request.containsKey("scope") ?
-        (Collection<String>) request.get("scope") : Collections.<String>emptySet());
+        (Collection<String>) request.get("scope") : Collections.emptySet());
 
     return new OAuth2Request(null, clientId, null, true, new HashSet<>(scope),
         null, null, null, null);
@@ -152,7 +152,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
     } catch (Exception ex) {
       this.logger.info("Could not fetch user details: " + ex.getClass() + ", "
           + ex.getMessage());
-      return Collections.<String, Object>singletonMap("error",
+      return Collections.singletonMap("error",
           "Could not fetch user details");
     }
   }

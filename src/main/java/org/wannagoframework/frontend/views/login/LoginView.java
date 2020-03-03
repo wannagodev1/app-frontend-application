@@ -225,7 +225,7 @@ public class LoginView extends ViewFrame
     signInFieldsLayout.setSpacing(false);
     signInFieldsLayout.setPadding(false);
 
-    if ( appProperties.getLoginForm().getDisplaySocialLogin() ) {
+    if (appProperties.getLoginForm().getDisplaySocialLogin()) {
       Label socialLoginLabel = new Label(getTranslation("element.login.loginWith"));
       signInFieldsLayout.add(socialLoginLabel);
       signInFieldsLayout.add(getSocialSigninOrSignupFields());
@@ -256,7 +256,7 @@ public class LoginView extends ViewFrame
     signinFormLayout.add(new Html("<br/>"));
 
     Checkbox rememberMeCheckbox = null;
-    if ( appProperties.getLoginForm().getDisplayRememberMe() ) {
+    if (appProperties.getLoginForm().getDisplayRememberMe()) {
       rememberMeCheckbox = new Checkbox();
       signinFormLayout
           .addFormItem(rememberMeCheckbox, getTranslation("element.login.createRememberMeToken"));
@@ -264,7 +264,7 @@ public class LoginView extends ViewFrame
     }
 
     ComboBox<Locale> languageComboBox = null;
-    if ( appProperties.getLoginForm().getDisplayLanguage() ) {
+    if (appProperties.getLoginForm().getDisplayLanguage()) {
       languageComboBox = new ComboBox();
       languageComboBox.setItems(MyI18NProvider.getAvailableLanguages(getLocale()));
       languageComboBox.setWidth("100%");
@@ -298,15 +298,19 @@ public class LoginView extends ViewFrame
     Binding<SigninForm, String> passwordBinging = binder.forField(passwordField)
         .withValidator(passwordPredicate, getTranslation("message.error.passwordNotEmpty"))
         .bind(SigninForm::getPassword, SigninForm::setPassword);
-    if ( languageComboBox != null )
+    if (languageComboBox != null) {
       binder.forField(languageComboBox).bind(SigninForm::getLocale, SigninForm::setLocale);
-    if ( rememberMeCheckbox != null )
-      binder.forField(rememberMeCheckbox).bind(SigninForm::getIsRememberMe, SigninForm::setIsRememberMe);
+    }
+    if (rememberMeCheckbox != null) {
+      binder.forField(rememberMeCheckbox)
+          .bind(SigninForm::getIsRememberMe, SigninForm::setIsRememberMe);
+    }
 
     usernameField.setRequiredIndicatorVisible(true);
     passwordField.setRequiredIndicatorVisible(true);
-    if ( languageComboBox != null )
+    if (languageComboBox != null) {
       languageComboBox.setRequiredIndicatorVisible(true);
+    }
 
     final Label errorLabel = new Label();
 
@@ -319,7 +323,7 @@ public class LoginView extends ViewFrame
         .addClickListener(event -> {
           if (binder.writeBeanIfValid(signinForm)) {
             if (doSignin(signinForm.getUsername(), signinForm.getPassword(),
-                signinForm.getIsRememberMe() == null ? false :  signinForm.getIsRememberMe())) {
+                signinForm.getIsRememberMe() == null ? false : signinForm.getIsRememberMe())) {
               afterSuccessLogin();
             }
           } else {
@@ -336,7 +340,7 @@ public class LoginView extends ViewFrame
         event -> {
           if (binder.writeBeanIfValid(signinForm)) {
             if (doSignin(signinForm.getUsername(), signinForm.getPassword(),
-                signinForm.getIsRememberMe() == null ? false : signinForm.getIsRememberMe() )) {
+                signinForm.getIsRememberMe() == null ? false : signinForm.getIsRememberMe())) {
               afterSuccessLogin();
             }
           } else {
@@ -352,7 +356,7 @@ public class LoginView extends ViewFrame
         .setFilter("event.key == 'Enter'");
     loginButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
-    if ( appProperties.getLoginForm().getDisplayForgetPassword() ) {
+    if (appProperties.getLoginForm().getDisplayForgetPassword()) {
       Button forgotPasswordButton = new Button(getTranslation("element.login.forgetPassword"));
       forgotPasswordButton.addClickListener(event -> {
         BaseServices.getAuthService()
@@ -363,7 +367,7 @@ public class LoginView extends ViewFrame
       forgotPasswordButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     }
 
-    if ( appProperties.getLoginForm().getDisplaySignup() ) {
+    if (appProperties.getLoginForm().getDisplaySignup()) {
       Button signupButton = new Button(getTranslation("element.login.doSignup"));
       signupButton.addClickListener(event -> switchToSignupForm());
       buttonsLayout.add(signupButton);
@@ -566,13 +570,12 @@ public class LoginView extends ViewFrame
 
     EmailField emailField = new EmailField();
     emailField.setWidth("15em");
-    if ( ! StringUtils.isBlank(email)) {
+    if (!StringUtils.isBlank(email)) {
       emailField.setValue(email);
       emailField.setReadOnly(true);
     }
-      verificationFormLayout.addFormItem(emailField, getTranslation("element.login.email"));
-      verificationFormLayout.add(new Html("<br/>"));
-
+    verificationFormLayout.addFormItem(emailField, getTranslation("element.login.email"));
+    verificationFormLayout.add(new Html("<br/>"));
 
     TextField verificationCodeField = new TextField();
     verificationCodeField.setWidth("15em");
@@ -592,9 +595,9 @@ public class LoginView extends ViewFrame
         .withValidator(new StringLengthValidator(
             getTranslation("message.error.nickNameRequired"), 1, null))
         .bind(VerificationForm::getNickName, VerificationForm::setNickName);
-      binder.forField(emailField)
-          .withValidator(new EmailValidator(getTranslation("message.error.invalidEmailFormat")))
-          .bind(VerificationForm::getEmail, VerificationForm::setEmail);
+    binder.forField(emailField)
+        .withValidator(new EmailValidator(getTranslation("message.error.invalidEmailFormat")))
+        .bind(VerificationForm::getEmail, VerificationForm::setEmail);
     binder
         .forField(verificationCodeField)
         .bind(VerificationForm::getVerificationCode, VerificationForm::setVerificationCode);
@@ -615,7 +618,8 @@ public class LoginView extends ViewFrame
         event -> {
           if (binder.writeBeanIfValid(verificationForm)) {
             doVerifyUser(securityUserId, verificationForm.getFirstName(),
-                verificationForm.getLastName(), verificationForm.getEmail(), verificationForm.getNickName(),
+                verificationForm.getLastName(), verificationForm.getEmail(),
+                verificationForm.getNickName(),
                 verificationForm.getVerificationCode());
           } else {
             BinderValidationStatus<VerificationForm> validate = binder.validate();
@@ -727,10 +731,12 @@ public class LoginView extends ViewFrame
   }
 
 
-  private void doVerifyUser(String securityUserId, String firstName, String lastName, String email, String nickname,
+  private void doVerifyUser(String securityUserId, String firstName, String lastName, String email,
+      String nickname,
       String verificationCode) {
     ServiceResult<String> response = BaseServices.getAuthService()
-        .validateUser(new ValidateUserQuery(lastName, firstName, email, nickname, securityUserId, verificationCode));
+        .validateUser(new ValidateUserQuery(lastName, firstName, email, nickname, securityUserId,
+            verificationCode));
     if (response.getIsSuccess()) {
       String result = response.getData();
       if (result.equals(SecurityConst.TOKEN_VALID)) {

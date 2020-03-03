@@ -125,7 +125,7 @@ public class CountryTrlListField extends
 
     public void setValues(Collection<CountryTrl> countryTrls) {
       if (countryTrls != null) {
-        setValue( new ArrayList<>(countryTrls));
+        setValue(new ArrayList<>(countryTrls));
       }
     }
   }

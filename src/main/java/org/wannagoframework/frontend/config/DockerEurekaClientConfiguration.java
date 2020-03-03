@@ -79,10 +79,10 @@ public class DockerEurekaClientConfiguration implements
     String serverContextPath = this.env.getProperty("server.servlet.context-path", "/");
     int serverPort = Integer
         .parseInt(this.env.getProperty("server.port", this.env.getProperty("port", "8080")));
-    Integer managementPort = (Integer) this.env
+    Integer managementPort = this.env
         .getProperty("management.server.port", Integer.class);
     String managementContextPath = this.env.getProperty("management.server.servlet.context-path");
-    Integer jmxPort = (Integer) this.env
+    Integer jmxPort = this.env
         .getProperty("com.sun.management.jmxremote.port", Integer.class);
     EurekaInstanceConfigBean instance = new EurekaInstanceConfigBean(inetUtils);
     instance.setNonSecurePort(serverPort);
@@ -186,7 +186,7 @@ public class DockerEurekaClientConfiguration implements
         logger().error(loggerPrefix + "Error while detecting eureka client address", e);
       }
       try {
-        Thread.currentThread().sleep(1000);
+        Thread.sleep(1000);
       } catch (InterruptedException e) {
       }
     }
