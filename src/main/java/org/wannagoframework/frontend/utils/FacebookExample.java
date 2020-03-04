@@ -51,7 +51,7 @@ public class FacebookExample {
         .callback("http://localhost:9002/frontend/oauth2/popupCallback.html")
         .build(FacebookApi.instance());
 
-    final Scanner in = new Scanner(System.in, StandardCharsets.UTF_8);
+    final Scanner in = new Scanner(System.in, "UTF-8");
 
     System.out.println("=== " + NETWORK_NAME + "'s OAuth Workflow ===");
     System.out.println();

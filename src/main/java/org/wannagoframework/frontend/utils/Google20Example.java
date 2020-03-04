@@ -53,7 +53,7 @@ public class Google20Example {
         .defaultScope("email") // replace with desired scope
         .callback("http://localhost:9002/frontend/oauth2/popupCallback.html")
         .build(GoogleApi20.instance());
-    final Scanner in = new Scanner(System.in, StandardCharsets.UTF_8);
+    final Scanner in = new Scanner(System.in, "UTF-8");
 
     System.out.println("=== " + NETWORK_NAME + "'s OAuth Workflow ===");
     System.out.println();

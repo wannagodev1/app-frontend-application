@@ -17,6 +17,9 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -92,11 +95,16 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     setViewDetails(createDetailsDrawer());
 
     filter(null);
+
+    if ( currentEditing != null )
+      showDetails( currentEditing );
   }
 
   protected T getCurrentEditing() {
     return currentEditing;
   }
+
+  protected void setCurrentEditing(T currentEditing ) { this.currentEditing = currentEditing; }
 
   protected void initHeader() {
     AppBar appBar = WannagoMainView.get().getAppBar();
