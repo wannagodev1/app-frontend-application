@@ -83,6 +83,12 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     setViewContent(createContent());
   }
 
+  protected T getCurrentEditing() {
+    return currentEditing;
+  }
+
+  protected void setCurrentEditing(T currentEditing ) { this.currentEditing = currentEditing; }
+
   protected void initHeader() {
     AppBar appBar = WannagoMainView.get().getAppBar();
     appBar.setNaviMode(AppBar.NaviMode.CONTEXTUAL);
@@ -102,10 +108,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     return content;
   }
 
-  private Component getContentTab() {
-    detailsDrawer = new DetailsDrawer();
-    detailsDrawer.setWidthFull();
-    // Header
+  protected Tabs buildTabs() {
     Tab details = new Tab(getTranslation("element.title.details"));
     Tab audit = new Tab(getTranslation("element.title.audit"));
 
@@ -121,6 +124,15 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
             .setContent(createAudit(currentEditing));
       }
     });
+
+    return tabs;
+  }
+  private Component getContentTab() {
+    detailsDrawer = new DetailsDrawer();
+    detailsDrawer.setWidthFull();
+    // Header
+
+    tabs = buildTabs();
 
     detailsDrawer
         .setContent(createDetails(currentEditing));
@@ -160,7 +172,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     tabs.setSelectedIndex(0);
   }
 
-  private Component createAudit(T entity) {
+  protected Component createAudit(T entity) {
     TextField id = new TextField();
     id.setWidth("100%");
 
@@ -235,7 +247,14 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
       }
       afterSave(currentEditing);
 
-      showDetails(currentEditing);
+      WannagoMainView.get()
+          .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
+
+      if ( isNew )
+        UI.getCurrent()
+            .navigate(getClass(), currentEditing.getId().toString());
+      else
+        showDetails(currentEditing);
     } else {
       BinderValidationStatus<T> validate = binder.validate();
       String errorText = validate.getFieldValidationStatuses()

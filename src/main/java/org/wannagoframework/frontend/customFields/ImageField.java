@@ -54,6 +54,7 @@ public class ImageField extends CustomField<StoredFile> implements HasStyle, Ser
   private StoredFile storedFile;
   private StoredFile initialImage;
   private Div croppieContent;
+private ViewPortType viewPortType = ViewPortType.CIRCLE;
 
   public ImageField() {
     this(null);
@@ -74,6 +75,10 @@ public class ImageField extends CustomField<StoredFile> implements HasStyle, Ser
     croppieContent.setHeight("350px");
 
     add(image);
+  }
+
+  public void setViewPortType( ViewPortType viewPortType ) {
+    this.viewPortType = viewPortType;
   }
 
   private void addOrUpdateImage() {
@@ -160,10 +165,10 @@ public class ImageField extends CustomField<StoredFile> implements HasStyle, Ser
     croppie.setHeight("300px");
 
     if (zoom != null) {
-      croppie.withViewport(new ViewPortConfig(150, 150, ViewPortType.CIRCLE))
+      croppie.withViewport(new ViewPortConfig(150, 150, viewPortType))
           .withShowZoomer(true).withEnableResize(false).withEnableZoom(true).withZoom(zoom);
     } else {
-      croppie.withViewport(new ViewPortConfig(150, 150, ViewPortType.CIRCLE))
+      croppie.withViewport(new ViewPortConfig(150, 150, viewPortType))
           .withShowZoomer(true).withEnableResize(false).withEnableZoom(true);
     }
 

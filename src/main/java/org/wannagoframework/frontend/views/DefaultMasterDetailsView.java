@@ -310,6 +310,9 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       }
       afterSave(currentEditing);
 
+      WannagoMainView.get()
+          .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
+
       if (!isNew) {
         dataProvider.refreshItem(currentEditing);
       } else {
