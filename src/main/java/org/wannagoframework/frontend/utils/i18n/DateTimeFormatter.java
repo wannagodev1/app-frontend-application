@@ -32,7 +32,17 @@ import java.util.Date;
 public class DateTimeFormatter {
 
   public static String formatNoYear(LocalDate localDate) {
-    return localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM"));
+    if ( localDate == null )
+      return "";
+    else
+      return localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM"));
+  }
+
+  public static String format(LocalDate localDate) {
+    if ( localDate == null )
+      return "";
+    else
+      return localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY"));
   }
 
   public static String format(Instant instant) {
