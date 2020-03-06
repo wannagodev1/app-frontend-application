@@ -22,10 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.notification.MailTemplate;
+import org.wannagoframework.dto.domain.notification.SmsTemplate;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.serviceQuery.generic.GetByNameQuery;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.utils.Page;
@@ -77,6 +79,13 @@ public class MailTemplateServiceFallback implements MailTemplateService, HasLogg
   @Override
   public ServiceResult<MailTemplate> getById(GetByStrIdQuery query) {
     logger().error(getLoggerPrefix("getById") + "Cannot connect to the server");
+
+    return new ServiceResult<>(false, "Cannot connect to server", null);
+  }
+
+  @Override
+  public ServiceResult<MailTemplate> getByMailAction(GetByNameQuery query) {
+    logger().error(getLoggerPrefix("getByMailAction") + "Cannot connect to the server");
 
     return new ServiceResult<>(false, "Cannot connect to server", null);
   }

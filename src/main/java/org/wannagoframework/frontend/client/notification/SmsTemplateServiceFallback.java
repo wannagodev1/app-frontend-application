@@ -26,6 +26,7 @@ import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.serviceQuery.generic.GetByNameQuery;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.utils.Page;
@@ -94,4 +95,12 @@ public class SmsTemplateServiceFallback implements SmsTemplateService, HasLogger
 
     return new ServiceResult<>(false, "Cannot connect to server", null);
   }
+
+  @Override
+  public ServiceResult<SmsTemplate> getBySmsAction(GetByNameQuery query) {
+    logger().error(getLoggerPrefix("getBySmsAction") + "Cannot connect to the server");
+
+    return new ServiceResult<>(false, "Cannot connect to server", null);
+  }
+
 }

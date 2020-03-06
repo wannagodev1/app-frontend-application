@@ -133,10 +133,8 @@ public class SmsTemplateAdminView extends ViewFrame implements RouterLayout, Has
     TextArea bodyField = new TextArea();
     bodyField.setWidthFull();
 
-    ComboBox<SmsActionEnum> smsActionField = new ComboBox<>();
-    smsActionField.setItems(SmsActionEnum.values());
-    smsActionField
-        .setItemLabelGenerator(e -> getTranslation("element.smsTemplate.action." + e.name()));
+    TextField smsActionField = new TextField();
+    smsActionField.setWidthFull();
 
     formLayout.addFormItem(nameField, getTranslation("element.smsTemplate.name"));
     formLayout.addFormItem(smsActionField, getTranslation("element.smsTemplate.action"));

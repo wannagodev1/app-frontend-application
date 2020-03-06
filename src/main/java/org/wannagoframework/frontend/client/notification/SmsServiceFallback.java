@@ -22,10 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.notification.Sms;
+import org.wannagoframework.dto.domain.notification.SmsTemplate;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.serviceQuery.generic.GetByNameQuery;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
 import org.wannagoframework.dto.utils.Page;
 

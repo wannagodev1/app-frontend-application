@@ -26,6 +26,7 @@ import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.serviceQuery.generic.GetByNameQuery;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.utils.Page;
@@ -53,4 +54,7 @@ public interface SmsTemplateService {
 
   @PostMapping(value = "/delete")
   ServiceResult<Void> delete(@RequestBody DeleteByStrIdQuery query);
+
+  @PostMapping(value = "/getBySmsAction")
+  ServiceResult<SmsTemplate> getBySmsAction(@RequestBody GetByNameQuery query);
 }

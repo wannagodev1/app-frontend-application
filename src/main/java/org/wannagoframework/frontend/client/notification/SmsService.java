@@ -21,11 +21,14 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.wannagoframework.dto.domain.notification.MailTemplate;
 import org.wannagoframework.dto.domain.notification.Sms;
+import org.wannagoframework.dto.domain.notification.SmsTemplate;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.CountAnyMatchingQuery;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByStrIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.FindAnyMatchingQuery;
+import org.wannagoframework.dto.serviceQuery.generic.GetByNameQuery;
 import org.wannagoframework.dto.serviceQuery.generic.GetByStrIdQuery;
 import org.wannagoframework.dto.utils.Page;
 
