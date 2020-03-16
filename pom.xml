@@ -50,9 +50,9 @@
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 
     <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-    <spring-boot-admin.version>2.2.1</spring-boot-admin.version>
+    <spring-boot-admin.version>2.2.2</spring-boot-admin.version>
 
-    <javamelody.version>1.81.0</javamelody.version>
+    <javamelody.version>1.82.0</javamelody.version>
     <stagemonitor.version>0.88.9</stagemonitor.version>
 
     <!-- Dependencies -->
@@ -183,10 +183,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>de.codecentric</groupId>
       <artifactId>spring-boot-admin-starter-client</artifactId>
-    </dependency-->
+    </dependency>
 
     <!-- Vaadin -->
     <dependency>
