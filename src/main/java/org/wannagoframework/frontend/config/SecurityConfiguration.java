@@ -106,13 +106,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return () -> user;
   }
 
-  /*
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
-*/
   /**
    * Require login to access internal pages and configure login form.
    */
