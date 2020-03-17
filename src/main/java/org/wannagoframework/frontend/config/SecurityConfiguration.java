@@ -31,6 +31,7 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -106,6 +107,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return () -> user;
   }
 
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
   /**
    * Require login to access internal pages and configure login form.
    */
@@ -160,7 +167,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     web.ignoring().antMatchers(
         // Vaadin Flow static resources
         "/VAADIN/**",
-
         // the standard favicon URI
         "/favicon.ico",
 
