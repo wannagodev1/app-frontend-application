@@ -31,14 +31,11 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.wannagoframework.dto.domain.security.SecurityUser;
@@ -96,11 +93,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   /**
    * The password encoder to use when encrypting passwords.
    */
+  /*
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-
+*/
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public CurrentUser currentUser() {
@@ -112,12 +110,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return () -> user;
   }
 
+  /*
   @Bean
   @Override
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
   }
-
+*/
   /**
    * Require login to access internal pages and configure login form.
    */
