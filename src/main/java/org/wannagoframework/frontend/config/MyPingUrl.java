@@ -29,10 +29,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
+import org.wannagoframework.commons.utils.HasLogger;
 
 
 /**
@@ -48,14 +47,13 @@ import org.springframework.boot.json.JsonParserFactory;
  *
  * @author stonse
  */
-public class MyPingUrl implements IPing {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MyPingUrl.class);
+public class MyPingUrl implements IPing, HasLogger {
 
   public MyPingUrl() {
   }
 
   public boolean isAlive(Server server) {
+    String loggerPrefix = getLoggerPrefix("isAlive", server.getHost());
     boolean isAlive = false;
     if (server != null && server instanceof DiscoveryEnabledServer) {
       DiscoveryEnabledServer dServer = (DiscoveryEnabledServer) server;
@@ -70,23 +68,23 @@ public class MyPingUrl implements IPing {
       try {
         HttpResponse response = httpClient.execute(getRequest);
         content = EntityUtils.toString(response.getEntity());
-        LOGGER.trace("content:" + content);
+        logger().debug(loggerPrefix + "content:" + content);
 
         if (response.getStatusLine().getStatusCode() == 200) {
           JsonParser springParser = JsonParserFactory.getJsonParser();
           Map<String, Object> map = springParser.parseMap(content);
           isAlive = map.get("status").equals("UP");
-          LOGGER.debug(appName + " server OK");
+          logger().debug(loggerPrefix + appName + " server OK");
         } else {
-          LOGGER.debug(appName + " server KO");
+          logger().debug(loggerPrefix + appName + " server KO");
         }
       } catch (IOException e) {
-        LOGGER
-            .error("IO Exception with server '" + appName + "', instance status is '"
+        logger()
+            .error(loggerPrefix + "IO Exception with server '" + appName + "', instance status is '"
                 + instanceStatus + "', url = '" + urlStr + "' : " + e.getLocalizedMessage());
 
       } catch (Exception e) {
-        LOGGER.error(
+        logger().error(loggerPrefix +
             "Unknown Exception with server url " + urlStr + " : " + e.getLocalizedMessage(), e);
       } finally {
         // Release the connection.
