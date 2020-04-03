@@ -61,15 +61,21 @@ public abstract class DefaultMasterView<T extends BaseEntity, F extends DefaultF
 
     initSearchBar();
 
-    newRecordButton = UIUtils
-        .createTertiaryButton(VaadinIcon.PLUS);
-    newRecordButton.addClickListener(event -> {
-      try {
-        showDetails(entityType.getDeclaredConstructor().newInstance());
-      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
-      }
-    });
-    appBar.addActionItem(newRecordButton);
+    if ( canCreateRecord() ) {
+      newRecordButton = UIUtils
+          .createTertiaryButton(VaadinIcon.PLUS);
+      newRecordButton.addClickListener(event -> {
+        try {
+          showDetails(entityType.getDeclaredConstructor().newInstance());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
+        }
+      });
+      appBar.addActionItem(newRecordButton);
+    }
+  }
+
+  protected boolean canCreateRecord() {
+    return true;
   }
 
   protected void initSearchBar() {

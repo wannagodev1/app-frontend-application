@@ -68,15 +68,15 @@ public class MyPingUrl implements IPing, HasLogger {
       try {
         HttpResponse response = httpClient.execute(getRequest);
         content = EntityUtils.toString(response.getEntity());
-        logger().debug(loggerPrefix + "content:" + content);
+        logger().trace(loggerPrefix + "content:" + content);
 
         if (response.getStatusLine().getStatusCode() == 200) {
           JsonParser springParser = JsonParserFactory.getJsonParser();
           Map<String, Object> map = springParser.parseMap(content);
           isAlive = map.get("status").equals("UP");
-          logger().debug(loggerPrefix + appName + " server OK");
+          logger().trace(loggerPrefix + appName + " server OK");
         } else {
-          logger().debug(loggerPrefix + appName + " server KO");
+          logger().trace(loggerPrefix + appName + " server KO");
         }
       } catch (IOException e) {
         logger()

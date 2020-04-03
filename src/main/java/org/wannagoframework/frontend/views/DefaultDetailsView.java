@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.BaseEntity;
+import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawer;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawerFooter;
@@ -50,7 +51,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
   protected Binder<T> binder;
   protected T currentEditing;
   private Class<T> entityType;
-  private Function<T, T> saveHandler;
+  private Function<T,ServiceResult<T>> saveHandler;
   private Consumer<T> deleteHandler;
   private Tabs tabs;
   private Class parentViewClassname;
@@ -65,7 +66,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
   }
 
   public DefaultDetailsView(String I18N_PREFIX, Class<T> entityType, Class parentViewClassname,
-      Function<T, T> saveHandler, Consumer<T> deleteHandler) {
+      Function<T, ServiceResult<T>> saveHandler, Consumer<T> deleteHandler) {
     this.I18N_PREFIX = I18N_PREFIX;
     this.entityType = entityType;
     this.binder = new BeanValidationBinder<>(entityType);
@@ -142,10 +143,10 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
 
     // Footer
     detailsDrawerFooter = new DetailsDrawerFooter();
-    if (saveHandler == null) {
+    if (saveHandler == null || ! canSave() ) {
       detailsDrawerFooter.setSaveButtonVisible(false);
     }
-    if (deleteHandler == null) {
+    if (deleteHandler == null || ! canDelete()) {
       detailsDrawerFooter.setDeleteButtonVisible(false);
     }
 
@@ -153,16 +154,19 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
       detailsDrawer.hide();
       currentEditing = null;
     });
-    if (saveHandler != null) {
+    if (saveHandler != null && canSave()) {
       detailsDrawerFooter.addSaveListener(e -> save());
     }
-    if (deleteHandler != null) {
+    if (deleteHandler != null && canDelete()) {
       detailsDrawerFooter.addDeleteListener(e -> delete());
     }
     detailsDrawer.setFooter(detailsDrawerFooter);
 
     return detailsDrawer;
   }
+
+  protected boolean canSave() { return true; }
+  protected boolean canDelete() { return true; }
 
   protected void showDetails(T entity) {
     this.binder = new BeanValidationBinder<>(entityType);
@@ -243,7 +247,14 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
       boolean isNew = currentEditing.getId() == null;
 
       if (beforeSave(currentEditing)) {
-        currentEditing = saveHandler.apply(currentEditing);
+        ServiceResult<T> result = saveHandler.apply(currentEditing);
+        if ( result.getIsSuccess() && result.getData() != null )
+          currentEditing = result.getData();
+        else {
+          WannagoMainView.get()
+              .displayErrorMessage(getTranslation("message.global.unknownError", result.getMessage()));
+          return;
+        }
       }
       afterSave(currentEditing);
 
