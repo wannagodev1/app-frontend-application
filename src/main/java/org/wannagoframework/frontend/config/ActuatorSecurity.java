@@ -41,7 +41,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @EnableWebSecurity
-//@Profile("devgcp")
 public class ActuatorSecurity {
 
   private Environment env;
@@ -70,9 +69,12 @@ public class ActuatorSecurity {
   public static class MonitoringWebSecurityConfigurationAdapter extends
       WebSecurityConfigurerAdapter {
 
-    @Autowired
-    @Qualifier("actuatorUserDetailsService")
-    private UserDetailsService v3UserDetailsService;
+    private final UserDetailsService v3UserDetailsService;
+
+    public MonitoringWebSecurityConfigurationAdapter(
+        @Qualifier("actuatorUserDetailsService") UserDetailsService v3UserDetailsService) {
+      this.v3UserDetailsService = v3UserDetailsService;
+    }
 
     @Bean
     @Override
