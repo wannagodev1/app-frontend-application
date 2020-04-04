@@ -90,11 +90,7 @@
       <artifactId>shared-commons</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.wannagoframework</groupId>
-      <artifactId>shared-dto</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+
     <!-- Spring -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
