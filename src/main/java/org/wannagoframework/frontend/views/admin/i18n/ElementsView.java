@@ -27,6 +27,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.wannagoframework.dto.domain.i18n.Element;
+import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.elementTrl.FindByElementQuery;
@@ -55,10 +56,10 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
   public ElementsView(MyI18NProvider myI18NProvider) {
     super("element.", Element.class, new ElementDataProvider(),
         (e) -> {
-          Element elt = I18NServices.getElementService().save(new SaveQuery<>(e))
-              .getData();
-          myI18NProvider.reloadElements();
-          return elt;
+          ServiceResult<Element> _elt = I18NServices.getElementService().save(new SaveQuery<>(e));
+          if ( _elt.getIsSuccess() )
+            myI18NProvider.reloadElements();
+          return _elt;
         },
         e -> I18NServices.getElementService().delete(new DeleteByIdQuery(e.getId())));
 

@@ -62,8 +62,7 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
 
   public SecurityUsersView() {
     super("securityUser.", SecurityUser.class, new SecurityUserDataProvider(),
-        (e) -> SecurityServices.getSecurityUserService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> SecurityServices.getSecurityUserService().save(new SaveQuery<>(e)),
         e -> SecurityServices.getSecurityUserService().delete(new DeleteByStrIdQuery(e.getId())));
   }
 
@@ -261,7 +260,7 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
   protected void filter(String filter) {
     dataProvider
         .setFilter(new DefaultFilter(
-            StringUtils.isBlank(filter) ? null : "*" + filter + "*",
+            StringUtils.isBlank(filter) ? null : filter,
             Boolean.TRUE));
   }
 }

@@ -29,6 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.wannagoframework.dto.domain.i18n.Action;
 import org.wannagoframework.dto.domain.i18n.ActionTrl;
+import org.wannagoframework.dto.domain.i18n.Element;
+import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.actionTrl.FindByActionQuery;
@@ -42,6 +44,7 @@ import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
 import org.wannagoframework.frontend.utils.i18n.I18NPageTitle;
+import org.wannagoframework.frontend.utils.i18n.MyI18NProvider;
 import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
 import org.wannagoframework.frontend.views.WannagoMainView;
 
@@ -54,10 +57,14 @@ import org.wannagoframework.frontend.views.WannagoMainView;
 @Secured({SecurityConst.ROLE_I18N, SecurityConst.ROLE_ADMIN})
 public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter> {
 
-  public ActionsView() {
+  public ActionsView(MyI18NProvider myI18NProvider) {
     super("action.", Action.class, new ActionDataProvider(),
-        (e) -> I18NServices.getActionService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> {
+          ServiceResult<Action> _elt = I18NServices.getActionService().save(new SaveQuery<>(e));
+          if ( _elt.getIsSuccess() )
+            myI18NProvider.reloadActions();
+          return _elt;
+        },
         e -> I18NServices.getActionService().delete(new DeleteByIdQuery(e.getId())));
   }
 

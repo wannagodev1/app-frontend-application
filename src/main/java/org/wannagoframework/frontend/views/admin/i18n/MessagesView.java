@@ -26,7 +26,9 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
+import org.wannagoframework.dto.domain.i18n.Action;
 import org.wannagoframework.dto.domain.i18n.Message;
+import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.messageTrl.FindByMessageQuery;
@@ -40,6 +42,7 @@ import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
 import org.wannagoframework.frontend.utils.i18n.I18NPageTitle;
+import org.wannagoframework.frontend.utils.i18n.MyI18NProvider;
 import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
 
 /**
@@ -52,10 +55,14 @@ import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
 @Secured({SecurityConst.ROLE_I18N, SecurityConst.ROLE_ADMIN})
 public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilter> {
 
-  public MessagesView() {
+  public MessagesView(MyI18NProvider myI18NProvider) {
     super("message.", Message.class, new MessageDataProvider(),
-        (e) -> I18NServices.getMessageService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> {
+          ServiceResult<Message> _elt = I18NServices.getMessageService().save(new SaveQuery<>(e));
+          if ( _elt.getIsSuccess() )
+            myI18NProvider.reloadMessages();
+          return _elt;
+        },
         e -> I18NServices.getMessageService().delete(new DeleteByIdQuery(e.getId())));
   }
 

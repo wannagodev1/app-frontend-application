@@ -184,7 +184,7 @@ public final class SecurityUtils {
 
     VaadinSession.getCurrent().getSession()
         .setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
-
+    VaadinSession.getCurrent().setAttribute(SecurityUser.class, securityUser);
     securityUser.setLastSuccessfulLogin(Instant.now());
     securityUser.setIsAccountLocked(false);
     securityUser.setFailedLoginAttempts(0);

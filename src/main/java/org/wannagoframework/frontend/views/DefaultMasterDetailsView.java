@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.wannagoframework.dto.domain.BaseEntity;
+import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawer;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawerFooter;
@@ -60,7 +61,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   protected Binder<T> binder;
   private T currentEditing;
   private Class<T> entityType;
-  private Function<T, T> saveHandler;
+  private Function<T, ServiceResult<T>> saveHandler;
   private Consumer<T> deleteHandler;
   private Tabs tabs;
   private Button newRecordButton;
@@ -77,7 +78,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
   public DefaultMasterDetailsView(String I18N_PREFIX, Class<T> entityType,
       DefaultDataProvider<T, F> dataProvider,
-      Function<T, T> saveHandler, Consumer<T> deleteHandler) {
+      Function<T, ServiceResult<T>> saveHandler, Consumer<T> deleteHandler) {
     this.I18N_PREFIX = I18N_PREFIX;
     this.entityType = entityType;
     this.binder = new BeanValidationBinder<>(entityType);
@@ -112,7 +113,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
     initSearchBar();
 
-    if (saveHandler != null) {
+    if (canCreateRecord() && saveHandler != null) {
       newRecordButton = UIUtils
           .createTertiaryButton(VaadinIcon.PLUS);
       newRecordButton.addClickListener(event -> {
@@ -126,6 +127,12 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     }
   }
 
+  protected boolean canCreateRecord() {
+    return true;
+  }
+  protected boolean canSave() { return true; }
+  protected boolean canDelete() { return true; }
+
   protected void initSearchBar() {
     AppBar appBar = WannagoMainView.get().getAppBar();
     Button searchButton = UIUtils.createTertiaryButton(VaadinIcon.SEARCH);
@@ -135,16 +142,32 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     appBar.addActionItem(searchButton);
   }
 
-  public void enableSaveButton() {
+  public void enableCreateRecord() {
     if (newRecordButton != null) {
-      newRecordButton.setEnabled(true);
+      newRecordButton.setVisible(true);
     }
   }
 
-  public void disableSaveButton() {
+  public void disableCreateRecord() {
     if (newRecordButton != null) {
-      newRecordButton.setEnabled(false);
+      newRecordButton.setVisible  (false);
     }
+  }
+
+  public void enableSaveButton() {
+    detailsDrawerFooter.setSaveButtonVisible(true);
+  }
+
+  public void disableSaveButton() {
+    detailsDrawerFooter.setSaveButtonVisible(false);
+  }
+
+  public void enableDeleteButton() {
+    detailsDrawerFooter.setDeleteButtonVisible(true);
+  }
+
+  public void disableDeleteButton() {
+    detailsDrawerFooter.setDeleteButtonVisible(false);
   }
 
   private Component createContent() {
@@ -202,10 +225,10 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
     // Footer
     detailsDrawerFooter = new DetailsDrawerFooter();
-    if (saveHandler == null) {
+    if (saveHandler == null || ! canSave()) {
       detailsDrawerFooter.setSaveButtonVisible(false);
     }
-    if (deleteHandler == null) {
+    if (deleteHandler == null|| ! canDelete()) {
       detailsDrawerFooter.setDeleteButtonVisible(false);
     }
 
@@ -213,10 +236,10 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       detailsDrawer.hide();
       currentEditing = null;
     });
-    if (saveHandler != null) {
+    if (saveHandler != null && canSave()) {
       detailsDrawerFooter.addSaveListener(e -> save());
     }
-    if (deleteHandler != null) {
+    if (deleteHandler != null && canDelete()) {
       detailsDrawerFooter.addDeleteListener(e -> delete());
     }
     detailsDrawer.setFooter(detailsDrawerFooter);
@@ -306,7 +329,14 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       boolean isNew = currentEditing.getId() == null;
 
       if (beforeSave(currentEditing)) {
-        currentEditing = saveHandler.apply(currentEditing);
+        ServiceResult<T> result = saveHandler.apply(currentEditing);
+        if ( result.getIsSuccess() && result.getData() != null )
+          currentEditing = result.getData();
+        else {
+          WannagoMainView.get()
+              .displayErrorMessage(getTranslation("message.global.unknownError", result.getMessage()));
+          return;
+        }
       }
       afterSave(currentEditing);
 

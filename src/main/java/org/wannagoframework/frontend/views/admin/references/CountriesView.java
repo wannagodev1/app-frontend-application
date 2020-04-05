@@ -68,8 +68,7 @@ public class CountriesView extends DefaultMasterDetailsView<Country, DefaultFilt
 
   public CountriesView() {
     super("country.", Country.class, new CountryDataProvider(),
-        (e) -> ReferenceServices.getCountryService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> ReferenceServices.getCountryService().save(new SaveQuery<>(e)),
         e -> ReferenceServices.getCountryService().delete(new DeleteByIdQuery(e.getId())));
   }
 

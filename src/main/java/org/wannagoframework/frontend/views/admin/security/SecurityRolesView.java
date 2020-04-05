@@ -46,8 +46,7 @@ public class SecurityRolesView extends DefaultMasterDetailsView<SecurityRole, De
 
   public SecurityRolesView() {
     super("securityRole.", SecurityRole.class, new SecurityRoleDataProvider(),
-        (e) -> SecurityServices.getSecurityRoleService().save(new SaveQuery<>(e))
-            .getData(),
+        (e) -> SecurityServices.getSecurityRoleService().save(new SaveQuery<>(e)),
         e -> SecurityServices.getSecurityRoleService().delete(new DeleteByStrIdQuery(e.getId())));
   }
 
