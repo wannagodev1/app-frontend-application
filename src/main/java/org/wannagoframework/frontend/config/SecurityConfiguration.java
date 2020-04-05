@@ -73,7 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final String LOGIN_PROCESSING_URL = "/login";
   private static final String LOGIN_FAILURE_URL = "/login?error";
   private static final String LOGIN_URL = "/login";
-  private static final String LOGOUT_SUCCESS_URL = "/" + AppConst.PAGE_PLACES;
+  private static final String LOGOUT_SUCCESS_URL = "/";
 
   @Autowired
   private SecurityRoleService securityRoleService;
