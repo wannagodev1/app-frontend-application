@@ -227,6 +227,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     detailsDrawerFooter = new DetailsDrawerFooter();
     if (saveHandler == null || ! canSave()) {
       detailsDrawerFooter.setSaveButtonVisible(false);
+      detailsDrawerFooter.setSaveAndNewButtonVisible(false);
     }
     if (deleteHandler == null|| ! canDelete()) {
       detailsDrawerFooter.setDeleteButtonVisible(false);
@@ -237,7 +238,8 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       currentEditing = null;
     });
     if (saveHandler != null && canSave()) {
-      detailsDrawerFooter.addSaveListener(e -> save());
+      detailsDrawerFooter.addSaveListener(e -> save(false));
+      detailsDrawerFooter.addSaveAndNewListener(e -> save(true));
     }
     if (deleteHandler != null && canDelete()) {
       detailsDrawerFooter.addDeleteListener(e -> delete());
@@ -248,6 +250,13 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   protected void showDetails(T entity) {
+    if (  entity.getId() !=  null )
+      detailsDrawerFooter.setSaveAndNewButtonVisible(false);
+    else {
+      if (saveHandler != null && canSave()) {
+        detailsDrawerFooter.setSaveAndNewButtonVisible(true);
+      }
+    }
     this.binder = new BeanValidationBinder<>(entityType);
 
     currentEditing = entity;
@@ -324,7 +333,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   protected void afterDelete() {
   }
 
-  private void save() {
+  private void save(boolean saveAndNew) {
     if (binder.writeBeanIfValid(currentEditing)) {
       boolean isNew = currentEditing.getId() == null;
 
@@ -342,6 +351,15 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
 
       WannagoMainView.get()
           .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
+
+      if ( saveAndNew ) {
+        try {
+          showDetails(entityType.getDeclaredConstructor().newInstance());
+
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
+        }
+        return;
+      }
 
       if (!isNew) {
         dataProvider.refreshItem(currentEditing);

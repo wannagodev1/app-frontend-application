@@ -34,6 +34,7 @@ import org.wannagoframework.frontend.utils.UIUtils;
 public class DetailsDrawerFooter extends FlexBoxLayout {
 
   private final Button save;
+  private final Button saveAndNew;
   private final Button cancel;
   private final Button delete;
 
@@ -44,6 +45,7 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
     setWidthFull();
 
     save = UIUtils.createPrimaryButton(getTranslation("action.global.save"));
+    saveAndNew = UIUtils.createPrimaryButton(getTranslation("action.global.saveAndNew"));
     cancel = UIUtils.createTertiaryButton(getTranslation("action.global.cancel"));
     delete = UIUtils.createTertiaryButton(getTranslation("action.global.delete"));
     delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -53,7 +55,7 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
     leftButton.setDefaultVerticalComponentAlignment(Alignment.START);
 
     HorizontalLayout rightButtons = new HorizontalLayout();
-    rightButtons.add(cancel, save);
+    rightButtons.add(cancel, save, saveAndNew);
     rightButtons.setDefaultVerticalComponentAlignment(Alignment.END);
     setJustifyContent("space-between");
     add(leftButton, rightButtons);
@@ -61,6 +63,10 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
 
   public void setSaveButtonTitle(String title) {
     save.setText(title);
+  }
+
+  public void setSaveAndNewButtonTitle(String title) {
+    saveAndNew.setText(title);
   }
 
   public void setCancelButtonTitle(String title) {
@@ -74,6 +80,11 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
   public Registration addSaveListener(
       ComponentEventListener<ClickEvent<Button>> listener) {
     return save.addClickListener(listener);
+  }
+
+  public Registration addSaveAndNewListener(
+      ComponentEventListener<ClickEvent<Button>> listener) {
+    return saveAndNew.addClickListener(listener);
   }
 
   public Registration addCancelListener(
@@ -90,6 +101,10 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
     save.setVisible(isVisible);
   }
 
+  public void setSaveAndNewButtonVisible(boolean isVisible) {
+    saveAndNew.setVisible(isVisible);
+  }
+
   public void setCancelButtonVisible(boolean isVisible) {
     cancel.setVisible(isVisible);
   }
@@ -100,6 +115,10 @@ public class DetailsDrawerFooter extends FlexBoxLayout {
 
   public void setSaveButtonEnabled(boolean isEnabled) {
     save.setEnabled(isEnabled);
+  }
+
+  public void setSaveAndNewButtonEnabled(boolean isEnabled) {
+    saveAndNew.setEnabled(isEnabled);
   }
 
   public void setCancelButtonEnabled(boolean isEnabled) {

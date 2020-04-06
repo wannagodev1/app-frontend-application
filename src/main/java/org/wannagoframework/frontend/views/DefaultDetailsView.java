@@ -17,6 +17,7 @@ import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.RouterLayout;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -145,6 +146,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
     detailsDrawerFooter = new DetailsDrawerFooter();
     if (saveHandler == null || ! canSave() ) {
       detailsDrawerFooter.setSaveButtonVisible(false);
+      detailsDrawerFooter.setSaveAndNewButtonVisible(false);
     }
     if (deleteHandler == null || ! canDelete()) {
       detailsDrawerFooter.setDeleteButtonVisible(false);
@@ -155,7 +157,8 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
       currentEditing = null;
     });
     if (saveHandler != null && canSave()) {
-      detailsDrawerFooter.addSaveListener(e -> save());
+      detailsDrawerFooter.addSaveListener(e -> save(false));
+      detailsDrawerFooter.addSaveAndNewListener(e -> save(true));
     }
     if (deleteHandler != null && canDelete()) {
       detailsDrawerFooter.addDeleteListener(e -> delete());
@@ -242,7 +245,7 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
   protected void afterDelete() {
   }
 
-  private void save() {
+  private void save(boolean saveAndNew) {
     if (binder.writeBeanIfValid(currentEditing)) {
       boolean isNew = currentEditing.getId() == null;
 
@@ -260,6 +263,15 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
 
       WannagoMainView.get()
           .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
+
+      if ( saveAndNew ) {
+        try {
+          showDetails(entityType.getDeclaredConstructor().newInstance());
+
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
+        }
+        return;
+      }
 
       if ( isNew )
         UI.getCurrent()
