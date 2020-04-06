@@ -67,7 +67,7 @@
     <problem-spring-web.version>0.25.0</problem-spring-web.version>
     <spring-data-provider.version>2.0.2</spring-data-provider.version>
 
-    <vaadin.version>14.1.21</vaadin.version>
+    <vaadin.version>14.1.23</vaadin.version>
 
     <multiselect-combo-box-flow.version>2.3.0</multiselect-combo-box-flow.version>
     <textfieldformatter.version>4.1.1</textfieldformatter.version>
