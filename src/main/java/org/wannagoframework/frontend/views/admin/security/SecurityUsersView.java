@@ -226,7 +226,6 @@ public class SecurityUsersView extends DefaultMasterDetailsView<SecurityUser, De
         .asRequired(getTranslation("message.securityUser.usernameRequired"))
         .bind(SecurityUser::getUsername, SecurityUser::setUsername);
     binder.forField(passwordField)
-        .asRequired(getTranslation("message.securityUser.passwordRequired"))
         .bind(SecurityUser::getPassword, SecurityUser::setPassword);
     binder.bind(firstNameField, SecurityUser::getFirstName, SecurityUser::setFirstName);
     binder.bind(lastNameField, SecurityUser::getLastName, SecurityUser::setLastName);
