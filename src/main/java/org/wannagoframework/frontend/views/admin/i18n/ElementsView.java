@@ -24,9 +24,13 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.textfield.TextField;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
+import org.wannagoframework.dto.domain.i18n.Action;
+import org.wannagoframework.dto.domain.i18n.ActionTrl;
 import org.wannagoframework.dto.domain.i18n.Element;
+import org.wannagoframework.dto.domain.i18n.ElementTrl;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
@@ -43,6 +47,7 @@ import org.wannagoframework.frontend.utils.UIUtils;
 import org.wannagoframework.frontend.utils.i18n.I18NPageTitle;
 import org.wannagoframework.frontend.utils.i18n.MyI18NProvider;
 import org.wannagoframework.frontend.views.DefaultMasterDetailsView;
+import org.wannagoframework.frontend.views.WannagoMainView;
 
 /**
  * @author WannaGo Dev1.
@@ -63,6 +68,25 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
         },
         e -> I18NServices.getElementService().delete(new DeleteByIdQuery(e.getId())));
 
+  }
+
+  @Override
+  protected boolean beforeSave(Element entity) {
+    long hasDefault = 0;
+    List<ElementTrl> elementTrls = entity.getTranslations();
+    for (ElementTrl elementTrl : elementTrls) {
+      if (elementTrl != null && elementTrl.getIsDefault()) {
+        hasDefault++;
+      }
+    }
+    if (hasDefault == 0) {
+      WannagoMainView.get().displayErrorMessage(getTranslation(
+          "message.global.translationNeedsDefault"));
+    } else if (hasDefault > 1) {
+      WannagoMainView.get().displayErrorMessage(getTranslation(
+          "message.global.translationMaxDefault"));
+    }
+    return hasDefault == 1;
   }
 
   protected Grid createGrid() {

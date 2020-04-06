@@ -73,7 +73,7 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
     long hasDefault = 0;
     List<ActionTrl> actionTrlList = entity.getTranslations();
     for (ActionTrl actionTrl : actionTrlList) {
-      if (actionTrl.getIsDefault()) {
+      if (actionTrl != null && actionTrl.getIsDefault()) {
         hasDefault++;
       }
     }
