@@ -38,6 +38,7 @@ import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
 import java.util.Locale;
+import org.springframework.core.env.Environment;
 import org.wannagoframework.commons.utils.HasLogger;
 import org.wannagoframework.dto.domain.security.SecurityUser;
 import org.wannagoframework.dto.utils.StoredFile;
@@ -95,12 +96,12 @@ public abstract class WannagoMainView extends FlexBoxLayout
   private FlexBoxLayout column;
   private Div appHeaderInner;
   private Div appFooterInner;
-
+private Environment environment;
   private Div appFooterOuter;
 
   private AppBar appBar;
 
-  public WannagoMainView() {
+  public WannagoMainView(Environment environment) {
     VaadinSession.getCurrent()
         .setErrorHandler((ErrorHandler) errorEvent -> {
           logger().error("Uncaught UI exception",
@@ -124,7 +125,7 @@ public abstract class WannagoMainView extends FlexBoxLayout
     setSizeFull();
 
     // Initialise the UI building blocks
-    initStructure();
+    initStructure(false,environment.getProperty("APP_VERSION"), environment.getProperty("info.tags.environment") );
 
     // Populate the navigation drawer
     initNaviItems();
@@ -162,8 +163,8 @@ public abstract class WannagoMainView extends FlexBoxLayout
   /**
    * Initialise the required components and containers.
    */
-  private void initStructure() {
-    naviDrawer = new NaviDrawer();
+  private void initStructure( boolean showSearchMenu, String version, String environnement ) {
+    naviDrawer = new NaviDrawer(showSearchMenu, version, environnement);
 
     viewContainer = new FlexBoxLayout();
     viewContainer.addClassName(CLASS_NAME + "__view-container");
