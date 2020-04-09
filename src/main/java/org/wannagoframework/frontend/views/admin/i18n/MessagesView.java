@@ -76,7 +76,7 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     long hasDefault = 0;
     List<MessageTrl> messageTrls = entity.getTranslations();
     for (MessageTrl messageTrl : messageTrls) {
-      if (messageTrl != null && messageTrl.getIsDefault()) {
+      if (messageTrl != null && messageTrl.getIsDefault() != null && messageTrl.getIsDefault()) {
         hasDefault++;
       }
     }

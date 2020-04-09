@@ -75,7 +75,7 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     long hasDefault = 0;
     List<ElementTrl> elementTrls = entity.getTranslations();
     for (ElementTrl elementTrl : elementTrls) {
-      if (elementTrl != null && elementTrl.getIsDefault()) {
+      if (elementTrl != null && elementTrl.getIsDefault() != null && elementTrl.getIsDefault()) {
         hasDefault++;
       }
     }
