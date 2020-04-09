@@ -91,7 +91,6 @@ private ViewPortType viewPortType = ViewPortType.CIRCLE;
     upload.setMaxFiles(1);
 
     final DetailsDrawer detailsDrawer = new DetailsDrawer(upload, croppieContent);
-
     upload.addSucceededListener(event -> {
       storedFile = new StoredFile();
       storedFile.setMimeType(event.getMIMEType());
@@ -115,6 +114,7 @@ private ViewPortType viewPortType = ViewPortType.CIRCLE;
     DetailsDrawerHeader header = new DetailsDrawerHeader(
         getTranslation("element.global.addOrUpdate"));
     DetailsDrawerFooter footer = new DetailsDrawerFooter();
+    footer.setSaveAndNewButtonVisible(false);
     footer.addCancelListener(cancelEvent -> {
       if (storedFile != null) {
         storedFile.setOrginalContent(initialImage.getOrginalContent());
