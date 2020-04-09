@@ -25,12 +25,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import elemental.json.JsonObject;
+import org.apache.commons.lang3.StringUtils;
 import org.wannagoframework.frontend.security.SecurityUtils;
 import org.wannagoframework.frontend.utils.UIUtils;
 
@@ -53,19 +55,20 @@ public class NaviDrawer extends Div
   private NaviMenu menu;
 
 
-  public NaviDrawer() {
+  public NaviDrawer(boolean showSearchMenu, String version, String environement ) {
     setClassName(CLASS_NAME);
 
     initScrim();
     initMainContent();
 
     initHeader();
-    initSearch();
+    if ( showSearchMenu )
+      initSearch();
 
     initScrollableArea();
     initMenu();
 
-    initFooter();
+    initFooter(version, environement);
   }
 
   @Override
@@ -112,7 +115,8 @@ public class NaviDrawer extends Div
   }
 
   public void toogleSearch() {
-    search.setVisible(SecurityUtils.isUserLoggedIn());
+    if ( search != null )
+      search.setVisible(SecurityUtils.isUserLoggedIn());
   }
 
   private void initScrollableArea() {
@@ -126,7 +130,14 @@ public class NaviDrawer extends Div
     scrollableArea.add(menu);
   }
 
-  private void initFooter() {
+  private void initFooter(String version, String environement) {
+    if (StringUtils.isNotBlank( version ) ) {
+      Label l = UIUtils.createH5Label("Version " + version + " (" + environement +")");
+      l.addClassName(CLASS_NAME + "__footer");
+      l.addClassName( "version" );
+      mainContent.add(l);
+    }
+
     railButton = UIUtils.createSmallButton("Collapse",
         VaadinIcon.CHEVRON_LEFT_SMALL);
     railButton.addClassName(CLASS_NAME + "__footer");
