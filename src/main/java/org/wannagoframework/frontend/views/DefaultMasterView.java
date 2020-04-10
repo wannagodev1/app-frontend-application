@@ -45,6 +45,8 @@ public abstract class DefaultMasterView<T extends BaseEntity, F extends DefaultF
     this.entityViewClass = entityViewClass;
   }
 
+  protected Class<T> getEntityType() { return entityType; }
+
   @Override
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
