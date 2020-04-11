@@ -255,8 +255,12 @@ public final class SecurityUtils {
 
   private static void deleteRememberMeCookie(Cookie existing) {
     Cookie cookie = new Cookie(existing.getName(), null);
-    cookie.setPath(existing.getPath());
-    cookie.setDomain(existing.getDomain());
+    if (existing.getPath() != null) {
+      cookie.setPath(existing.getPath());
+    }
+    if (existing.getDomain() != null) {
+      cookie.setDomain(existing.getDomain());
+    }
     cookie.setMaxAge(0);
     VaadinService.getCurrentResponse().addCookie(cookie);
   }
