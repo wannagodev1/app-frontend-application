@@ -19,27 +19,38 @@
 package org.wannagoframework.frontend.views.admin.i18n;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.StreamResource;
+import java.io.ByteArrayInputStream;
 import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
+import org.vaadin.olli.FileDownloadWrapper;
 import org.wannagoframework.dto.domain.i18n.Action;
 import org.wannagoframework.dto.domain.i18n.ActionTrl;
-import org.wannagoframework.dto.domain.i18n.Element;
+import org.wannagoframework.dto.serviceQuery.BaseRemoteQuery;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
 import org.wannagoframework.dto.serviceQuery.generic.DeleteByIdQuery;
 import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
+import org.wannagoframework.dto.serviceQuery.i18n.ImportI18NFileQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.actionTrl.FindByActionQuery;
 import org.wannagoframework.dto.utils.SecurityConst;
 import org.wannagoframework.frontend.client.i18n.I18NServices;
+import org.wannagoframework.frontend.components.CheckboxColumnComponent;
+import org.wannagoframework.frontend.components.ImportFileDialog;
 import org.wannagoframework.frontend.customFields.ActionTrlListField;
 import org.wannagoframework.frontend.dataproviders.ActionDataProvider;
 import org.wannagoframework.frontend.dataproviders.DefaultDataProvider.DefaultFilter;
-import org.wannagoframework.frontend.renderer.BooleanRenderer;
 import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
@@ -56,7 +67,6 @@ import org.wannagoframework.frontend.views.WannagoMainView;
 @I18NPageTitle(messageKey = AppConst.PAGE_ACTIONS)
 @Secured({SecurityConst.ROLE_I18N, SecurityConst.ROLE_ADMIN})
 public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter> {
-
   public ActionsView(MyI18NProvider myI18NProvider) {
     super("action.", Action.class, new ActionDataProvider(),
         (e) -> {
@@ -96,8 +106,11 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
 
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
-    grid.addColumn(Action::getName).setKey("name").setSortable(true);
-    grid.addColumn(new BooleanRenderer<>(Action::getIsTranslated))
+
+    Column categoryColumn = grid.addColumn(Action::getCategory).setKey("category")
+        .setSortable(true);
+    Column nameColumn = grid.addColumn(Action::getName).setKey("name").setSortable(true);
+    grid.addComponentColumn(action -> new CheckboxColumnComponent(action.getIsTranslated()))
         .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
@@ -106,6 +119,46 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
         column.setResizable(true);
       }
     });
+
+    HeaderRow headerRow = grid.prependHeaderRow();
+
+    HeaderCell buttonsCell = headerRow.join(categoryColumn, nameColumn);
+
+    Button exportI18NButton = new Button(getTranslation("action.i18n.download"));
+    FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(
+        new StreamResource("i18n.xlsx", () -> {
+          ServiceResult<Byte[]> result = I18NServices.getI18NService()
+              .getI18NFile(new BaseRemoteQuery());
+          if (result.getIsSuccess() && result.getData() != null) {
+            return new ByteArrayInputStream(ArrayUtils.toPrimitive(result.getData()));
+          } else {
+            return null;
+          }
+        }));
+    buttonWrapper.wrapComponent(exportI18NButton);
+
+    Button importI18NButton = new Button(getTranslation("action.i18n.upload"));
+    importI18NButton.addClickListener(buttonClickEvent -> {
+      ImportFileDialog<byte[]> importFileDialog = new ImportFileDialog();
+      importFileDialog
+          .open(getTranslation("element.i18n.upload"), getTranslation("message.i18n.upload"), null,
+              getTranslation("action.i18n.upload"), bytes -> {
+                importFileDialog.close();
+                ServiceResult<Void> result = I18NServices.getI18NService()
+                    .importI18NFile(new ImportI18NFileQuery(ArrayUtils.toObject(bytes)));
+                if (result.getIsSuccess()) {
+                  WannagoMainView.get()
+                      .displayInfoMessage(getTranslation("message.fileImport.success"));
+                } else {
+                  WannagoMainView.get().displayInfoMessage(
+                      getTranslation("message.fileImport.error", result.getMessage()));
+                }
+              }, () -> importFileDialog.close());
+    });
+
+    HorizontalLayout headerHLayout = new HorizontalLayout(buttonWrapper, importI18NButton);
+    buttonsCell.setComponent(headerHLayout);
+
     return grid;
   }
 
@@ -118,6 +171,9 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
 
     TextField name = new TextField();
     name.setWidth("100%");
+
+    TextField categoryField = new TextField();
+    categoryField.setWidth("100%");
 
     Checkbox isActive = new Checkbox();
 
@@ -139,6 +195,8 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
 
     FormLayout.FormItem nameItem = editingForm
         .addFormItem(name, getTranslation("element." + I18N_PREFIX + "name"));
+    FormLayout.FormItem categoryItem = editingForm
+        .addFormItem(categoryField, getTranslation("element." + I18N_PREFIX + "category"));
     FormLayout.FormItem translationsItem = editingForm
         .addFormItem(actionTrl, getTranslation("element." + I18N_PREFIX + "translations"));
     editingForm
@@ -146,7 +204,7 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
     editingForm
         .addFormItem(isActive, getTranslation("element." + I18N_PREFIX + "isActive"));
 
-    UIUtils.setColSpan(2, nameItem, translationsItem);
+    UIUtils.setColSpan(2, nameItem, categoryItem, translationsItem);
 
     if (action.getTranslations().size() == 0) {
       action.setTranslations(
@@ -157,6 +215,7 @@ public class ActionsView extends DefaultMasterDetailsView<Action, DefaultFilter>
     binder.setBean(action);
 
     binder.bind(name, Action::getName, Action::setName);
+    binder.bind(categoryField, Action::getCategory, Action::setCategory);
     binder.bind(isActive, Action::getIsActive, Action::setIsActive);
     binder.bind(isTranslated, Action::getIsTranslated, Action::setIsTranslated);
     binder.bind(actionTrl, Action::getTranslations, Action::setTranslations);

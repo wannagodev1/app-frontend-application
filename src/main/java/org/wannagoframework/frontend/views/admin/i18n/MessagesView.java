@@ -27,9 +27,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
-import org.wannagoframework.dto.domain.i18n.Action;
-import org.wannagoframework.dto.domain.i18n.Element;
-import org.wannagoframework.dto.domain.i18n.ElementTrl;
 import org.wannagoframework.dto.domain.i18n.Message;
 import org.wannagoframework.dto.domain.i18n.MessageTrl;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
@@ -38,10 +35,10 @@ import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.messageTrl.FindByMessageQuery;
 import org.wannagoframework.dto.utils.SecurityConst;
 import org.wannagoframework.frontend.client.i18n.I18NServices;
+import org.wannagoframework.frontend.components.CheckboxColumnComponent;
 import org.wannagoframework.frontend.customFields.MessageTrlListField;
 import org.wannagoframework.frontend.dataproviders.DefaultDataProvider.DefaultFilter;
 import org.wannagoframework.frontend.dataproviders.MessageDataProvider;
-import org.wannagoframework.frontend.renderer.BooleanRenderer;
 import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
@@ -100,8 +97,9 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
 
+    grid.addColumn(Message::getCategory).setKey("category").setSortable(true);
     grid.addColumn(Message::getName).setKey("name").setSortable(true);
-    grid.addColumn(new BooleanRenderer<>(Message::getIsTranslated))
+    grid.addComponentColumn(message -> new CheckboxColumnComponent(message.getIsTranslated()))
         .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
@@ -123,6 +121,9 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     TextField name = new TextField();
     name.setWidth("100%");
 
+    TextField categoryField = new TextField();
+    categoryField.setWidth("100%");
+
     Checkbox isActive = new Checkbox();
 
     Checkbox isTranslated = new Checkbox();
@@ -142,6 +143,8 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
             FormLayout.ResponsiveStep.LabelsPosition.TOP));
     FormLayout.FormItem nameItem = editingForm
         .addFormItem(name, getTranslation("element." + I18N_PREFIX + "name"));
+    FormLayout.FormItem categoryItem = editingForm
+        .addFormItem(categoryField, getTranslation("element." + I18N_PREFIX + "category"));
     FormLayout.FormItem translationsItem = editingForm
         .addFormItem(messageTrl, getTranslation("element." + I18N_PREFIX + "translations"));
     editingForm
@@ -149,7 +152,7 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     editingForm
         .addFormItem(isActive, getTranslation("element." + I18N_PREFIX + "isActive"));
 
-    UIUtils.setColSpan(2, nameItem, translationsItem);
+    UIUtils.setColSpan(2, nameItem, categoryItem, translationsItem);
 
     if (message.getTranslations().size() == 0) {
       message.setTranslations(
@@ -160,6 +163,7 @@ public class MessagesView extends DefaultMasterDetailsView<Message, DefaultFilte
     binder.setBean(message);
 
     binder.bind(name, Message::getName, Message::setName);
+    binder.bind(categoryField, Message::getCategory, Message::setCategory);
     binder.bind(isActive, Message::getIsActive, Message::setIsActive);
     binder.bind(isTranslated, Message::getIsTranslated, Message::setIsTranslated);
     binder.bind(messageTrl, Message::getTranslations, Message::setTranslations);

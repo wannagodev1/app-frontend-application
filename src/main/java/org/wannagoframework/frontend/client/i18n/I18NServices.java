@@ -32,6 +32,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @Service
 public class I18NServices {
 
+  public static I18NService getI18NService() {
+    return getApplicationContext().getBean(I18NService.class);
+  }
+
   public static ActionService getActionService() {
     return getApplicationContext().getBean(ActionService.class);
   }

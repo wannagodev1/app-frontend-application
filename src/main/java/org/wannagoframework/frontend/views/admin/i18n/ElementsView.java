@@ -27,8 +27,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.annotation.Secured;
-import org.wannagoframework.dto.domain.i18n.Action;
-import org.wannagoframework.dto.domain.i18n.ActionTrl;
 import org.wannagoframework.dto.domain.i18n.Element;
 import org.wannagoframework.dto.domain.i18n.ElementTrl;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
@@ -37,10 +35,10 @@ import org.wannagoframework.dto.serviceQuery.generic.SaveQuery;
 import org.wannagoframework.dto.serviceQuery.i18n.elementTrl.FindByElementQuery;
 import org.wannagoframework.dto.utils.SecurityConst;
 import org.wannagoframework.frontend.client.i18n.I18NServices;
+import org.wannagoframework.frontend.components.CheckboxColumnComponent;
 import org.wannagoframework.frontend.customFields.ElementTrlListField;
 import org.wannagoframework.frontend.dataproviders.DefaultDataProvider.DefaultFilter;
 import org.wannagoframework.frontend.dataproviders.ElementDataProvider;
-import org.wannagoframework.frontend.renderer.BooleanRenderer;
 import org.wannagoframework.frontend.utils.AppConst;
 import org.wannagoframework.frontend.utils.LumoStyles;
 import org.wannagoframework.frontend.utils.UIUtils;
@@ -99,8 +97,9 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     grid.setDataProvider(dataProvider);
     grid.setHeight("100%");
 
+    grid.addColumn(Element::getCategory).setKey("category").setSortable(true);
     grid.addColumn(Element::getName).setKey("name").setSortable(true);
-    grid.addColumn(new BooleanRenderer<>(Element::getIsTranslated))
+    grid.addComponentColumn(element -> new CheckboxColumnComponent(element.getIsTranslated()))
         .setKey("isTranslated").setSortable(true);
 
     grid.getColumns().forEach(column -> {
@@ -122,6 +121,9 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     TextField name = new TextField();
     name.setWidth("100%");
 
+    TextField categoryField = new TextField();
+    categoryField.setWidth("100%");
+
     Checkbox isActive = new Checkbox();
 
     Checkbox isTranslated = new Checkbox();
@@ -141,6 +143,8 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
             FormLayout.ResponsiveStep.LabelsPosition.TOP));
     FormLayout.FormItem nameItem = editingForm
         .addFormItem(name, getTranslation("element." + I18N_PREFIX + "name"));
+    FormLayout.FormItem categoryItem = editingForm
+        .addFormItem(categoryField, getTranslation("element." + I18N_PREFIX + "category"));
     FormLayout.FormItem translationsItem = editingForm
         .addFormItem(elementTrl, getTranslation("element." + I18N_PREFIX + "translations"));
     editingForm
@@ -148,7 +152,7 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     editingForm
         .addFormItem(isActive, getTranslation("element." + I18N_PREFIX + "isActive"));
 
-    UIUtils.setColSpan(2, nameItem, translationsItem);
+    UIUtils.setColSpan(2, nameItem, categoryItem, translationsItem);
 
     if (element.getTranslations().size() == 0) {
       element.setTranslations(
@@ -158,6 +162,7 @@ public class ElementsView extends DefaultMasterDetailsView<Element, DefaultFilte
     binder.setBean(element);
 
     binder.bind(name, Element::getName, Element::setName);
+    binder.bind(categoryField, Element::getCategory, Element::setCategory);
     binder.bind(isActive, Element::getIsActive, Element::setIsActive);
     binder.bind(isTranslated, Element::getIsTranslated, Element::setIsTranslated);
     binder.bind(elementTrl, Element::getTranslations, Element::setTranslations);
