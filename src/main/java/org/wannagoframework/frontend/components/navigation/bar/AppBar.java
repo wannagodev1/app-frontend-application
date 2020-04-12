@@ -41,6 +41,7 @@ import com.vaadin.flow.shared.Registration;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.wannagoframework.dto.domain.security.SecurityUser;
 import org.wannagoframework.dto.domain.user.BaseUser;
 import org.wannagoframework.dto.utils.AppContext;
@@ -173,6 +174,8 @@ public class AppBar extends FlexBoxLayout {
       if (userAvatar != null && userAvatar.getId() != null && userAvatar.getContent() != null) {
         avatar.setSrc(new StreamResource(userAvatar.getFilename(),
             () -> new ByteArrayInputStream(userAvatar.getContent())));
+      } else if (StringUtils.isNoneBlank(securityUser.getImageUrl())) {
+        avatar.setSrc(securityUser.getImageUrl());
       }
 
       ContextMenu contextMenu = new ContextMenu(avatar);
