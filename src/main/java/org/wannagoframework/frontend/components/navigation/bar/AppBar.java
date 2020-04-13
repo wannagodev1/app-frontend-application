@@ -174,7 +174,7 @@ public class AppBar extends FlexBoxLayout {
       if (userAvatar != null && userAvatar.getId() != null && userAvatar.getContent() != null) {
         avatar.setSrc(new StreamResource(userAvatar.getFilename(),
             () -> new ByteArrayInputStream(userAvatar.getContent())));
-      } else if (StringUtils.isNoneBlank(securityUser.getImageUrl())) {
+      } else if (StringUtils.isNotBlank(securityUser.getImageUrl())) {
         avatar.setSrc(securityUser.getImageUrl());
       }
 
