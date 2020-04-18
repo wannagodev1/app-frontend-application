@@ -3,8 +3,9 @@ package org.wannagoframework.frontend.views;
 import ch.carnet.kasparscherrer.EmptyFormLayoutItem;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.crud.CrudI18n.Confirmations.Confirmation;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -18,6 +19,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveEvent.ContinueNavigationAction;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import java.lang.reflect.InvocationTargetException;
@@ -26,8 +30,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.wannagoframework.dto.domain.BaseEntity;
 import org.wannagoframework.dto.serviceQuery.ServiceResult;
+import org.wannagoframework.frontend.components.ConfirmationDialog;
 import org.wannagoframework.frontend.components.FlexBoxLayout;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawer;
 import org.wannagoframework.frontend.components.detailsdrawers.DetailsDrawerFooter;
@@ -50,7 +57,7 @@ import org.wannagoframework.frontend.utils.i18n.DateTimeFormatter;
  * @since 8/27/19
  */
 public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends DefaultFilter> extends
-    SplitViewFrame {
+    SplitViewFrame implements BeforeLeaveObserver {
 
   protected final String I18N_PREFIX;
   protected Grid<T> grid;
@@ -101,6 +108,25 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       showDetails( currentEditing );
   }
 
+  @Override
+  public void beforeLeave(BeforeLeaveEvent beforeLeaveEvent) {
+    ContinueNavigationAction action = beforeLeaveEvent.postpone();
+    checkForDetailsChanges( () -> action.proceed() );
+  }
+
+  protected void checkForDetailsChanges( Runnable action ) {
+    if ( currentEditing != null &&  this.binder.hasChanges() ) {
+      ConfirmDialog.createQuestion()
+          .withCaption(getTranslation("element.global.unsavedChanged.title"))
+          .withMessage(getTranslation("message.global.unsavedChanged"))
+          .withOkButton(() ->action.run(), ButtonOption.focus(), ButtonOption.caption(getTranslation("action.global.yes")))
+          .withCancelButton(ButtonOption.caption( getTranslation("action.global.no")))
+          .open();
+    } else {
+      action.run();
+    }
+  }
+
   protected T getCurrentEditing() {
     return currentEditing;
   }
@@ -116,14 +142,16 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     if (canCreateRecord() && saveHandler != null) {
       newRecordButton = UIUtils
           .createTertiaryButton(VaadinIcon.PLUS);
-      newRecordButton.addClickListener(event -> {
-        try {
-          showDetails(entityType.getDeclaredConstructor().newInstance());
-
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
-        }
-      });
+      newRecordButton.addClickListener(event -> showDetails());
       appBar.addActionItem(newRecordButton);
+    }
+  }
+
+  protected void showDetails() {
+    try {
+      showDetails(entityType.getDeclaredConstructor().newInstance());
+
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
     }
   }
 
@@ -131,6 +159,7 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     return true;
   }
   protected boolean canSave() { return true; }
+
   protected boolean canDelete() { return true; }
 
   protected void initSearchBar() {
@@ -218,8 +247,10 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
     detailsDrawerHeader = new DetailsDrawerHeader(
         getTranslation("element." + I18N_PREFIX + "className"), tabs);
     detailsDrawerHeader.addCloseListener(e -> {
-      detailsDrawer.hide();
-      currentEditing = null;
+      checkForDetailsChanges( () ->  {
+        detailsDrawer.hide();
+        currentEditing = null;
+      });
     });
     detailsDrawer.setHeader(detailsDrawerHeader);
 
@@ -250,19 +281,21 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   protected void showDetails(T entity) {
-    if (  entity.getId() !=  null )
-      detailsDrawerFooter.setSaveAndNewButtonVisible(false);
-    else {
-      if (saveHandler != null && canSave()) {
-        detailsDrawerFooter.setSaveAndNewButtonVisible(true);
+    checkForDetailsChanges( () -> {
+      if (entity.getId() != null)
+        detailsDrawerFooter.setSaveAndNewButtonVisible(false);
+      else {
+        if (saveHandler != null && canSave()) {
+          detailsDrawerFooter.setSaveAndNewButtonVisible(true);
+        }
       }
-    }
-    this.binder = new BeanValidationBinder<>(entityType);
+      this.binder = new BeanValidationBinder<>(entityType);
 
-    currentEditing = entity;
-    detailsDrawer.setContent(createDetails(entity));
-    detailsDrawer.show();
-    tabs.setSelectedIndex(0);
+      currentEditing = entity;
+      detailsDrawer.setContent(createDetails(entity));
+      detailsDrawer.show();
+      tabs.setSelectedIndex(0);
+    } );
   }
 
   protected abstract Component createDetails(T entity);
@@ -352,20 +385,17 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
       WannagoMainView.get()
           .displayInfoMessage(getTranslation("message.global.recordSavedMessage"));
 
-      if ( saveAndNew ) {
-        try {
-          showDetails(entityType.getDeclaredConstructor().newInstance());
-
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {
-        }
-        return;
-      }
-
       if (!isNew) {
         dataProvider.refreshItem(currentEditing);
       } else {
         dataProvider.refreshAll();
       }
+
+      if ( saveAndNew ) {
+        showDetails();
+        return;
+      }
+
       showDetails(currentEditing);
     } else {
       BinderValidationStatus<T> validate = binder.validate();
@@ -382,14 +412,12 @@ public abstract class DefaultMasterDetailsView<T extends BaseEntity, F extends D
   }
 
   public void delete() {
-    ConfirmDialog dialog = new ConfirmDialog(getTranslation("message.global.confirmDelete.title"),
-        getTranslation("message.global.confirmDelete.message"),
-        getTranslation("action.global.deleteButton"), event -> deleteConfirmed(),
-        getTranslation("action.global.cancelButton"), event -> {
-    });
-    dialog.setConfirmButtonTheme("error primary");
-
-    dialog.setOpened(true);
+    ConfirmDialog.create()
+        .withCaption(getTranslation("message.global.confirmDelete.title"))
+        .withMessage(getTranslation("message.global.confirmDelete.message"))
+        .withOkButton(() ->deleteConfirmed(), ButtonOption.focus(), ButtonOption.caption("YES"))
+        .withCancelButton(ButtonOption.caption("NO"))
+        .open();
   }
 
   private void deleteConfirmed() {

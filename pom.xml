@@ -71,6 +71,7 @@
 
     <vaadin.version>14.1.25</vaadin.version>
 
+    <confirm-dialog.versîon>2.0.0</confirm-dialog.versîon>
     <multiselect-combo-box-flow.version>2.3.0</multiselect-combo-box-flow.version>
     <textfieldformatter.version>4.1.1</textfieldformatter.version>
     <rapidpm-functional-reactive.version>01.00.04-RPM</rapidpm-functional-reactive.version>
@@ -297,6 +298,12 @@
       <groupId>ch.carnet.kasparscherrer</groupId>
       <artifactId>emptyformlayoutitem</artifactId>
       <version>${emptyformlayoutitem.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.claspina</groupId>
+      <artifactId>confirm-dialog</artifactId>
+      <version>${confirm-dialog.versîon}</version>
     </dependency>
 
     <!-- OAuth2 Login -->
