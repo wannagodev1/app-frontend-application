@@ -115,6 +115,7 @@ public class AppConst {
   public static final String[] DEFAULT_INSURANCE_POLICIES_SORT_FIELDS = {"consultationDate"};
   public static final String[] DEFAULT_ASSET_TYPE_FIELDS = {"displayName"};
   public static final String[] DEFAULT_USER_SORT_FIELDS = {"u.lastName"};
+  public static final String[] DEFAULT_GROUP_SORT_FIELDS = {"n.name"};
   public static final String[] DEFAULT_ASSET_SORT_FIELDS = {"a.name", "a.id"};
   public static final String[] COUNTRY_SORT_FIELDS = {"m.name"};
   public static final String[] PLACE_TYPE_SORT_FIELDS = {"t.name"};

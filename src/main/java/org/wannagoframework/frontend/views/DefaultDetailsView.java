@@ -6,10 +6,12 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -181,19 +183,19 @@ public abstract class DefaultDetailsView<T extends BaseEntity> extends ViewFrame
 
   protected Component createAudit(T entity) {
     TextField id = new TextField();
-    id.setWidth("100%");
+    id.setWidthFull();
 
     TextField created = new TextField();
-    created.setWidth("100%");
+    created.setWidthFull();
 
     TextField updated = new TextField();
-    updated.setWidth("100%");
+    updated.setWidthFull();
 
     TextField createdBy = new TextField();
-    createdBy.setWidth("100%");
+    createdBy.setWidthFull();
 
     TextField updatedBy = new TextField();
-    updatedBy.setWidth("100%");
+    updatedBy.setWidthFull();
 
     // Form layout
     FormLayout auditForm = new FormLayout();
