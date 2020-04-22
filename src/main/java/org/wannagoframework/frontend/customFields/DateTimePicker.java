@@ -56,7 +56,9 @@ public class DateTimePicker extends CustomField<LocalDateTime> implements Serial
   @Override
   protected LocalDateTime generateModelValue() {
     final LocalDate date = datePicker.getValue();
-    final LocalTime time = timePicker.getValue();
+    LocalTime time = timePicker.getValue();
+    if (  time == null )
+      time = LocalTime.of(0,0);
     return date != null && time != null ?
         LocalDateTime.of(date, time) :
         null;
